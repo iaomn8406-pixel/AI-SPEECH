@@ -23,7 +23,7 @@ body {
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(6px);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;
@@ -31,11 +31,87 @@ body {
   }
 }
 
+@keyframes floatMascot {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(1deg);
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(99, 102, 241, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(99, 102, 241, 0.45);
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
 .animate-fade-in {
-  animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-float {
+  animation: floatMascot 4s ease-in-out infinite;
+}
+
+.animate-glow {
+  animation: pulseGlow 2.5s ease-in-out infinite;
+}
+
+/* Reading Word Highlighter Styles */
+.reading-word {
+  display: inline-block;
+  padding: 4px 8px;
+  margin: 2px 4px;
+  border-radius: 8px;
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+
+.reading-word:hover {
+  background-color: #f1f5f9;
+}
+
+.word-correct {
+  background-color: #d1fae5 !important;
+  color: #065f46 !important;
+  font-weight: 800 !important;
+  transform: scale(1.08);
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
+  border: 1px solid #10b981;
+}
+
+.word-wrong {
+  background-color: #fee2e2 !important;
+  color: #991b1b !important;
+  font-weight: 800 !important;
+  border: 1px solid #ef4444;
+  animation: shake 0.3s ease-in-out;
+}
+
+.word-current {
+  background-color: #e0e7ff !important;
+  color: #3730a3 !important;
+  font-weight: 800 !important;
+  border-bottom: 3px solid #4f46e5;
+  transform: scale(1.05);
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  75% { transform: translateX(3px); }
 }
 
 /* Mobile Safe Area Padding */
 .pb-safe {
-  padding-bottom: env(safe-area-inset-bottom, 12px);
+  padding-bottom: env(safe-area-inset-bottom, 16px);
 }

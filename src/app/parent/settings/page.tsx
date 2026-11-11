@@ -1,19 +1,52 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from '@/components/layout/Navbar';
 import Sidebar from '@/components/layout/Sidebar';
 import MobileNav from '@/components/layout/MobileNav';
 import Footer from '@/components/layout/Footer';
-import { Settings, Shield, Bell, Moon, Globe, CheckCircle2 } from 'lucide-react';
+import { Settings, Shield, Bell, Moon, Globe, CheckCircle2, Volume2, Sparkles, Mic } from 'lucide-react';
+import { DemoStore } from '@/lib/demo/demo-store';
+import { speakArabicText } from '@/lib/ai/speech';
 
 export default function ParentSettingsPage() {
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [bargeInEnabled, setBargeInEnabled] = useState(true);
   const [notifications, setNotifications] = useState(true);
+  const [selectedVoiceId, setSelectedVoiceId] = useState('salma');
   const [saved, setSaved] = useState(false);
 
+  const availableVoices = [
+    { id: 'salma', nameAr: 'سلمى (أخصائية دافئة ومشجعة للأطفال)', type: 'female', sample: 'أهلاً بك يا بطل! أنا المعلمة سلمى، سعيدة جداً بالتدريب معك اليوم!' },
+    { id: 'sara', nameAr: 'سارة (صوت مبهج ولطيف لمرحلة الروضة)', type: 'female', sample: 'مرحباً يا حلوين! هيا نلعب مع حيوانات المزرعة ونتعلم كلمات جديدة!' },
+    { id: 'nour', nameAr: 'نور (صوت هادئ ومريح لفرط الحركة والتشتت)', type: 'female', sample: 'تنفس بهدوء يا بطل، اسمع صوتي ونكرر معاً خطوة بخطوة.' },
+    { id: 'gemini-female', nameAr: 'Gemini Aoede (صوت ذكاء اصطناعي أنثوي متقدم)', type: 'cloud', sample: 'نظام التخاطب الذكي جاهز للاستماع لنطقك وتشجيعك.' },
+    { id: 'openai-shimmer', nameAr: 'OpenAI Shimmer / Nova (صوت أنثوي فائق الواقعية)', type: 'cloud', sample: 'أنا جاهزة لمحادثتك الصوتية المباشرة في أي وقت.' },
+  ];
+
+  useEffect(() => {
+    const pref = DemoStore.getPreferredVoice();
+    if (pref?.id) {
+      setSelectedVoiceId(pref.id);
+    }
+  }, []);
+
+  const handleTestVoice = (sampleText: string) => {
+    speakArabicText(sampleText, {
+      pitch: 1.25,
+      rate: 0.88,
+    });
+  };
+
   const handleSave = () => {
+    const match = availableVoices.find(v => v.id === selectedVoiceId);
+    if (match) {
+      DemoStore.setPreferredVoice({
+        id: match.id,
+        nameAr: match.nameAr,
+        gender: 'female',
+      });
+    }
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   };
@@ -82,6 +115,75 @@ export default function ParentSettingsPage() {
                   onChange={(e) => setNotifications(e.target.checked)}
                   className="w-5 h-5 accent-indigo-600 cursor-pointer"
                 />
+              </div>
+            </div>
+
+            {/* Voice Persona Selector */}
+            <div className="space-y-4 pt-4 border-t border-gray-100">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-sm font-extrabold text-gray-900 flex items-center gap-2">
+                    <Volume2 className="w-4 h-4 text-purple-600" />
+                    <span>اختيار صوت الأخصائية الذكية (أصوات مناسبة للأطفال)</span>
+                  </h3>
+                  <p className="text-[11px] text-gray-500">
+                    حدد الصوت المناسب لراحة طفلك ونبرته المفضلة أثناء المحادثة والجلسات
+                  </p>
+                </div>
+                <span className="text-[10px] bg-purple-100 text-purple-800 font-bold px-2 py-0.5 rounded-full">
+                  صوت أنثوي تشجيعي
+                </span>
+              </div>
+
+              <div className="space-y-2.5">
+                {availableVoices.map((voice) => {
+                  const isSelected = selectedVoiceId === voice.id;
+                  return (
+                    <div
+                      key={voice.id}
+                      onClick={() => setSelectedVoiceId(voice.id)}
+                      className={`p-3.5 rounded-2xl border transition-all cursor-pointer flex items-center justify-between ${
+                        isSelected
+                          ? 'bg-purple-50/70 border-purple-400 shadow-xs'
+                          : 'bg-white hover:bg-gray-50 border-gray-200'
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <input
+                          type="radio"
+                          name="voice"
+                          checked={isSelected}
+                          onChange={() => setSelectedVoiceId(voice.id)}
+                          className="w-4 h-4 accent-purple-600"
+                        />
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs font-bold text-gray-900">{voice.nameAr}</span>
+                            {voice.type === 'cloud' && (
+                              <span className="text-[9px] bg-indigo-100 text-indigo-700 font-bold px-1.5 py-0.5 rounded-md">
+                                سحابي متقدم
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-[10px] text-gray-500 mt-0.5">&quot;{voice.sample}&quot;</p>
+                        </div>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleTestVoice(voice.sample);
+                        }}
+                        className="px-2.5 py-1.5 bg-white hover:bg-purple-100 text-purple-700 border border-purple-200 rounded-xl text-[11px] font-bold flex items-center gap-1.5 shadow-2xs transition-colors cursor-pointer shrink-0"
+                        title="تجربة الاستماع للصوت"
+                      >
+                        <Volume2 className="w-3.5 h-3.5" />
+                        <span>معاينة</span>
+                      </button>
+                    </div>
+                  );
+                })}
               </div>
             </div>
 

@@ -12,9 +12,87 @@ const STORAGE_KEYS = {
   CONSULTATION: 'ai_speech_consultation',
   USER_ROLE: 'ai_speech_user_role',
   SESSIONS: 'ai_speech_custom_sessions',
+  IS_LOGGED_IN: 'ai_speech_is_logged_in',
+  USER_EMAIL: 'ai_speech_user_email',
+  CUSTOM_API_KEY: 'ai_speech_custom_api_key',
+  PREFERRED_VOICE: 'ai_speech_preferred_voice',
 };
 
 export class DemoStore {
+  // --- Authentication ---
+  static isLoggedIn(): boolean {
+    if (typeof window === 'undefined') return false;
+    return localStorage.getItem(STORAGE_KEYS.IS_LOGGED_IN) === 'true';
+  }
+
+  static login(email: string = 'user@example.com', role: 'parent' | 'specialist' | 'admin' = 'parent'): void {
+    if (typeof window === 'undefined') return;
+    localStorage.setItem(STORAGE_KEYS.IS_LOGGED_IN, 'true');
+    localStorage.setItem(STORAGE_KEYS.USER_EMAIL, email);
+    localStorage.setItem(STORAGE_KEYS.USER_ROLE, role);
+    window.dispatchEvent(new Event('auth-changed'));
+  }
+
+  static logout(): void {
+    if (typeof window === 'undefined') return;
+    localStorage.removeItem(STORAGE_KEYS.IS_LOGGED_IN);
+    localStorage.removeItem(STORAGE_KEYS.USER_EMAIL);
+    window.dispatchEvent(new Event('auth-changed'));
+  }
+
+  static getUserEmail(): string {
+    if (typeof window === 'undefined') return '';
+    return localStorage.getItem(STORAGE_KEYS.USER_EMAIL) || 'parent@aispeech.com';
+  }
+
+  // --- API Key Status ---
+  static hasActiveApiKey(): boolean {
+    if (typeof window === 'undefined') return false;
+    const customKey = localStorage.getItem(STORAGE_KEYS.CUSTOM_API_KEY);
+    if (customKey && customKey.trim().length > 5) return true;
+    
+    // Check environment key
+    const envGemini = process.env.NEXT_PUBLIC_APP_NAME ? process.env.GEMINI_API_KEY : undefined;
+    const envOpenAI = process.env.OPENAI_API_KEY;
+    if ((envGemini && envGemini.length > 5 && !envGemini.includes('your-')) ||
+        (envOpenAI && envOpenAI.length > 5 && !envOpenAI.includes('your-'))) {
+      return true;
+    }
+    return false;
+  }
+
+  static getCustomApiKey(): string {
+    if (typeof window === 'undefined') return '';
+    return localStorage.getItem(STORAGE_KEYS.CUSTOM_API_KEY) || '';
+  }
+
+  static setCustomApiKey(key: string): void {
+    if (typeof window === 'undefined') return;
+    localStorage.setItem(STORAGE_KEYS.CUSTOM_API_KEY, key.trim());
+    window.dispatchEvent(new Event('api-key-changed'));
+  }
+
+  // --- Voice Preferences ---
+  static getPreferredVoice(): { id: string; nameAr: string; gender: 'female' | 'male' } {
+    if (typeof window === 'undefined') return { id: 'salma', nameAr: 'سلمى (أخصائية دافئة للأطفال)', gender: 'female' };
+    const stored = localStorage.getItem(STORAGE_KEYS.PREFERRED_VOICE);
+    if (stored) {
+      try {
+        return JSON.parse(stored);
+      } catch {
+        // Fallback
+      }
+    }
+    return { id: 'salma', nameAr: 'سلمى (أخصائية دافئة للأطفال)', gender: 'female' };
+  }
+
+  static setPreferredVoice(voice: { id: string; nameAr: string; gender: 'female' | 'male' }): void {
+    if (typeof window === 'undefined') return;
+    localStorage.setItem(STORAGE_KEYS.PREFERRED_VOICE, JSON.stringify(voice));
+    window.dispatchEvent(new Event('voice-changed'));
+  }
+
+  // --- Children Management ---
   static getChildren(): Child[] {
     if (typeof window === 'undefined') return DEMO_CHILDREN;
     const stored = localStorage.getItem(STORAGE_KEYS.CHILDREN);
@@ -60,6 +138,7 @@ export class DemoStore {
     return created;
   }
 
+  // --- Sessions & Results ---
   static getSessionResults(childId?: string): SessionResult[] {
     if (typeof window === 'undefined') return DEMO_SESSION_RESULTS;
     const stored = localStorage.getItem(STORAGE_KEYS.SESSION_RESULTS);

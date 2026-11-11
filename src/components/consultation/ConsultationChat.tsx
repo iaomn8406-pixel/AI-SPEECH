@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Bot, Send, Sparkles, User, ArrowLeft, Loader2, PlayCircle, HelpCircle } from 'lucide-react';
 import { ConsultationMessage, Child } from '@/types/models';
 import { DemoStore } from '@/lib/demo/demo-store';
+import SpeechAudioButton from '@/components/common/SpeechAudioButton';
 
 export default function ConsultationChat() {
   const [messages, setMessages] = useState<ConsultationMessage[]>([]);
@@ -145,6 +146,9 @@ export default function ConsultationChat() {
 
         {messages.map((msg) => {
           const isUser = msg.sender === 'user';
+          // Clean all asterisks completely as requested
+          const cleanContent = msg.content.replace(/\*\*(.*?)\*\*/g, '$1').replace(/\*/g, '');
+
           return (
             <div
               key={msg.id}
@@ -169,7 +173,7 @@ export default function ConsultationChat() {
                     : 'bg-white text-gray-800 border border-indigo-100/70 rounded-tl-xs shadow-sm'
                 }`}
               >
-                <div className="whitespace-pre-wrap">{msg.content}</div>
+                <div className="whitespace-pre-wrap">{cleanContent}</div>
 
                 {/* Suggested Session CTA button if AI generated a link */}
                 {msg.suggested_action && (
@@ -185,9 +189,14 @@ export default function ConsultationChat() {
                   </div>
                 )}
                 
-                <span className={`block text-[10px] mt-1 text-left ${isUser ? 'text-indigo-200' : 'text-gray-400'}`}>
-                  {msg.timestamp}
-                </span>
+                <div className="flex items-center justify-between mt-2 pt-1 border-t border-gray-50/50">
+                  <span className={`text-[10px] ${isUser ? 'text-indigo-200' : 'text-gray-400'}`}>
+                    {msg.timestamp}
+                  </span>
+                  {!isUser && (
+                    <SpeechAudioButton text={cleanContent} size="sm" title="الاستماع للإجابة صوتياً" />
+                  )}
+                </div>
               </div>
             </div>
           );

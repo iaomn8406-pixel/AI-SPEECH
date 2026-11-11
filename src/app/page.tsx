@@ -5,6 +5,7 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import MobileNav from '@/components/layout/MobileNav';
 import MascotAvatar from '@/components/child/MascotAvatar';
+import SpeechAudioButton from '@/components/common/SpeechAudioButton';
 import { PREBUILT_SPECIALIZATIONS } from '@/lib/demo/prebuilt-curriculum';
 import { 
   Sparkles, 
@@ -19,7 +20,11 @@ import {
   PlayCircle, 
   ShieldCheck, 
   ChevronDown,
-  Volume2
+  Volume2,
+  PhoneCall,
+  Flame,
+  Award,
+  Sparkle
 } from 'lucide-react';
 
 export default function LandingPage() {
@@ -58,23 +63,34 @@ export default function LandingPage() {
               <div className="lg:col-span-7 space-y-6 text-center lg:text-right">
                 
                 {/* Badge */}
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-indigo-100 to-purple-100 border border-indigo-200/60 shadow-xs">
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-indigo-100 via-purple-100 to-pink-100 border border-indigo-200/60 shadow-xs">
                   <Sparkles className="w-4 h-4 text-indigo-600 animate-spin" />
                   <span className="text-xs sm:text-sm font-extrabold text-indigo-900">
                     منصة الذكاء الاصطناعي التفاعلية الأولى لتأهيل نطق الأطفال
                   </span>
                 </div>
 
-                <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-gray-900 leading-[1.2] tracking-tight">
-                  نُساعد طفلك أن يتكلم بثقة، <br className="hidden sm:inline" />
-                  <span className="bg-gradient-to-l from-indigo-600 via-purple-600 to-pink-500 bg-clip-text text-transparent">
-                    ويكتشف صوته الجميل!
-                  </span>
-                </h1>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-center lg:justify-start gap-3">
+                    <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-gray-900 leading-[1.2] tracking-tight">
+                      نُساعد طفلك أن يتكلم بثقة، <br className="hidden sm:inline" />
+                      <span className="bg-gradient-to-l from-indigo-600 via-purple-600 to-pink-500 bg-clip-text text-transparent">
+                        ويكتشف صوته الجميل!
+                      </span>
+                    </h1>
+                    <div className="hidden sm:block">
+                      <SpeechAudioButton 
+                        text="نساعد طفلك أن يتكلم بثقة، ويكتشف صوته الجميل! منصة الذكاء الاصطناعي لتأهيل الأطفال." 
+                        size="md"
+                        title="استمع للعنوان بصوت الأخصائية" 
+                      />
+                    </div>
+                  </div>
 
-                <p className="text-base sm:text-xl text-gray-600 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-medium">
-                  جلسات تخاطب تفاعلية ذكية، معالجة تأخر الكلام وعسر القراءة، وتنمية مهارات التواصل الاجتماعي عبر شخصيات محبوبة ومحادثة صوتية فورية تفهم طفلك وتشجعه.
-                </p>
+                  <p className="text-base sm:text-xl text-gray-600 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-medium">
+                    جلسات تخاطب تفاعلية ذكية، معالجة تأخر الكلام وعسر القراءة، وتنمية مهارات التواصل الاجتماعي عبر شخصيات محبوبة ومحادثة صوتية فورية تفهم طفلك وتشجعه.
+                  </p>
+                </div>
 
                 {/* CTAs */}
                 <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
@@ -82,7 +98,7 @@ export default function LandingPage() {
                     href="/parent"
                     className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-700 hover:to-pink-700 text-white font-black text-base rounded-2xl shadow-xl shadow-indigo-200 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all text-center flex items-center justify-center gap-2"
                   >
-                    <span>تجربة المنصة الآن (Demo)</span>
+                    <span>ابدأ رحلة طفلك الآن</span>
                     <ArrowLeft className="w-5 h-5" />
                   </a>
 
@@ -112,39 +128,164 @@ export default function LandingPage() {
                 </div>
               </div>
 
-              {/* Interactive Visual Hero Card */}
+              {/* Interactive Visual Hero Card (Optimized for Mobile & Desktop) */}
               <div className="lg:col-span-5 flex justify-center">
-                <div className="w-full max-w-sm sm:max-w-md bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border-4 border-indigo-100 relative">
+                <div className="w-full max-w-sm sm:max-w-md bg-white rounded-3xl p-5 sm:p-7 shadow-2xl border-2 sm:border-4 border-indigo-100 relative animate-glow">
                   
-                  {/* Floating Mascot */}
-                  <div className="flex flex-col items-center mb-6">
-                    <MascotAvatar state="speaking" size="lg" />
-                    <h3 className="font-black text-lg text-gray-900 mt-4">البطل سمسم 🐻</h3>
-                    <p className="text-xs text-indigo-600 font-bold">رفيق طفلك الذكي في كل خطوة</p>
+                  {/* Floating Mascot with Speech Bubble */}
+                  <div className="flex flex-col items-center mb-4 relative">
+                    <div className="absolute -top-3 sm:-top-4 bg-gradient-to-r from-amber-400 to-yellow-400 text-purple-950 font-black text-[11px] sm:text-xs px-3 py-1 rounded-full shadow-md animate-bounce">
+                      مرحباً يا بطل! أنا سمسم 🐻
+                    </div>
+                    
+                    <div className="mt-4 animate-float">
+                      <MascotAvatar state="speaking" size="md" />
+                    </div>
+                    
+                    <div className="text-center mt-3">
+                      <div className="flex items-center justify-center gap-2">
+                        <h3 className="font-black text-lg text-gray-900">صديقك التفاعلي الذكي</h3>
+                        <SpeechAudioButton text="أهلاً بك يا بطل! أنا سمسم صديقك في منصة نطق.. هيا نتكلم ونلعب معاً!" size="sm" />
+                      </div>
+                      <p className="text-xs text-indigo-600 font-bold mt-0.5">يتحدث معك بصوت واضح ويفهم نطقك بلطف</p>
+                    </div>
+                  </div>
+
+                  {/* Quick Feature Badges in Card */}
+                  <div className="grid grid-cols-2 gap-2 mb-4">
+                    <a
+                      href="/sessions/sess-sl-101"
+                      className="p-2.5 bg-gradient-to-br from-indigo-50 to-purple-50 hover:from-indigo-100 hover:to-purple-100 rounded-xl border border-indigo-100 text-center transition-all group"
+                    >
+                      <PhoneCall className="w-4 h-4 mx-auto text-indigo-600 mb-1 group-hover:scale-110 transition-transform" />
+                      <span className="text-[11px] font-black text-indigo-950 block">مكالمة أخصائي AI</span>
+                      <span className="text-[9px] text-indigo-600 font-semibold">صوت حي وتوضيح بصري</span>
+                    </a>
+
+                    <a
+                      href="/sessions/sess-sl-101"
+                      className="p-2.5 bg-gradient-to-br from-emerald-50 to-teal-50 hover:from-emerald-100 hover:to-teal-100 rounded-xl border border-emerald-100 text-center transition-all group"
+                    >
+                      <BookOpen className="w-4 h-4 mx-auto text-emerald-600 mb-1 group-hover:scale-110 transition-transform" />
+                      <span className="text-[11px] font-black text-emerald-950 block">مدرب القراءة التفاعلي</span>
+                      <span className="text-[9px] text-emerald-600 font-semibold">كلمات تنور أخضر وأحمر</span>
+                    </a>
                   </div>
 
                   {/* Sample Interactive Session Trigger */}
-                  <div className="bg-indigo-50/70 p-4 rounded-2xl border border-indigo-100 space-y-3">
+                  <div className="bg-indigo-50/70 p-3.5 rounded-2xl border border-indigo-100 space-y-2.5">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-black text-indigo-900">جلسة تجريبية سريعة:</span>
+                      <span className="text-xs font-black text-indigo-900">جلسة اليوم المقترحة:</span>
                       <span className="text-[10px] font-bold bg-white text-indigo-600 px-2 py-0.5 rounded-full shadow-2xs">
                         حيوانات المزرعة 🐮
                       </span>
                     </div>
-                    <p className="text-xs text-gray-700 leading-relaxed">
+                    <p className="text-xs text-gray-700 leading-relaxed font-medium">
                       &quot;انظر إلى القطة اللطيفة، واسمع صوتها الجميل.. كرر معي: قِـطَّـة!&quot;
                     </p>
                     <a
                       href="/sessions/sess-sl-101"
-                      className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs rounded-xl flex items-center justify-center gap-2 shadow-md shadow-indigo-100 transition-colors"
+                      className="w-full py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-extrabold text-xs sm:text-sm rounded-xl flex items-center justify-center gap-2 shadow-md shadow-indigo-100 active:scale-95 transition-all"
                     >
                       <PlayCircle className="w-4 h-4 text-yellow-300" />
-                      <span>ابدأ الجلسة التفاعلية الآن</span>
+                      <span>بدء التدريب الفوري الآن</span>
                     </a>
                   </div>
                 </div>
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* 1.5 Professional Feature Showcase Banners (Mobile & Desktop) */}
+        <section className="py-10 bg-gradient-to-b from-white via-indigo-50/40 to-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+            
+            {/* Banner 1: Live Voice Call with AI Specialist */}
+            <div className="bg-gradient-to-r from-indigo-900 via-purple-900 to-slate-900 rounded-3xl p-6 sm:p-10 text-white shadow-xl relative overflow-hidden">
+              <div className="absolute top-0 right-0 -mt-8 -mr-8 w-48 h-48 bg-purple-500/20 rounded-full blur-3xl pointer-events-none" />
+              <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+                <div className="lg:col-span-8 space-y-4">
+                  <div className="inline-flex items-center gap-2 bg-purple-500/30 border border-purple-400/40 px-3 py-1 rounded-full text-xs font-bold text-yellow-300">
+                    <PhoneCall className="w-3.5 h-3.5 animate-pulse" />
+                    <span>ميزة حصرية: مكالمة مباشرة صوتية مع أخصائية التخاطب</span>
+                  </div>
+                  <h3 className="text-2xl sm:text-3xl font-black leading-snug">
+                    تحدث صوتياً مع الأخصائية الذكية د. سارة كأنك في جلسة حقيقية!
+                  </h3>
+                  <p className="text-xs sm:text-sm text-indigo-200 leading-relaxed font-medium">
+                    محادثة صوتية ذكية تفهم نطق الطفل، وإذا قال الطفل «مش فاهم» يفتح الشات تلقائياً وينشئ كارت بصري مبسط يوضح الكلمة ومخرج الحرف بالصورة التفاعلية دون مقاطعة الجلسة.
+                  </p>
+                  <div className="flex flex-wrap items-center gap-3 pt-2">
+                    <a
+                      href="/sessions/sess-sl-101"
+                      className="px-6 py-3 bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-300 hover:to-amber-400 text-purple-950 font-black text-xs sm:text-sm rounded-xl shadow-lg transition-transform hover:scale-105 active:scale-95 inline-flex items-center gap-2"
+                    >
+                      <PhoneCall className="w-4 h-4 text-purple-950" />
+                      <span>تجربة المكالمة الصوتية الحية</span>
+                    </a>
+                    <SpeechAudioButton 
+                      text="تحدث صوتياً مع أخصائية التخاطب الذكية د. سارة، محادثة صوتية تفاعلية تفهم نطق الطفل وتساعده على الكلام بثقة." 
+                      size="md" 
+                    />
+                  </div>
+                </div>
+
+                <div className="lg:col-span-4 bg-white/10 backdrop-blur-md rounded-2xl p-5 border border-white/20 text-center space-y-3">
+                  <div className="w-14 h-14 mx-auto rounded-full bg-gradient-to-tr from-purple-500 to-pink-500 flex items-center justify-center text-2xl shadow-md">
+                    👩‍⚕️
+                  </div>
+                  <h4 className="font-black text-sm text-yellow-200">د. سارة / سلمى (صوت أنثوي دافئ للأطفال)</h4>
+                  <p className="text-[11px] text-gray-200 leading-normal">
+                    نبرة صوتية تشجيعية، تدعم المقاطعة الصوتية (Barge-in) وتكييف الأسئلة حسب استجابة طفلك.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Banner 2: Interactive Reading Highlighter */}
+            <div className="bg-gradient-to-r from-emerald-800 via-teal-800 to-cyan-900 rounded-3xl p-6 sm:p-10 text-white shadow-xl relative overflow-hidden">
+              <div className="absolute top-0 left-0 -mt-8 -ml-8 w-48 h-48 bg-teal-500/20 rounded-full blur-3xl pointer-events-none" />
+              <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+                <div className="lg:col-span-8 space-y-4">
+                  <div className="inline-flex items-center gap-2 bg-emerald-500/30 border border-emerald-400/40 px-3 py-1 rounded-full text-xs font-bold text-yellow-300">
+                    <BookOpen className="w-3.5 h-3.5" />
+                    <span>مدرب القراءة التفاعلي بالكلمات المضيئة (Karaoke Style)</span>
+                  </div>
+                  <h3 className="text-2xl sm:text-3xl font-black leading-snug">
+                    الطفل يقرأ بصوته، والكلمة الصحيحة تنور أخضر والخطأ تنور أحمر!
+                  </h3>
+                  <p className="text-xs sm:text-sm text-teal-100 leading-relaxed font-medium">
+                    يفتح الطفل المايك ويقرأ القطعة كلمة بكلمة؛ الذكاء الاصطناعي يحلل الصوت فورياً، فإذا نطق صح نورت أخضر، وإذا تعثر نورت أحمر ويوجهه الصوت اللطيف: «عيدي تاني يا بطلة» أو «عيد تاني يا بطل»، مع زر سماع لكل جملة للطفل الذي لا يجيد القراءة بعد.
+                  </p>
+                  <div className="flex flex-wrap items-center gap-3 pt-2">
+                    <a
+                      href="/sessions/sess-dys-301"
+                      className="px-6 py-3 bg-white hover:bg-teal-50 text-teal-900 font-black text-xs sm:text-sm rounded-xl shadow-lg transition-transform hover:scale-105 active:scale-95 inline-flex items-center gap-2"
+                    >
+                      <Mic className="w-4 h-4 text-emerald-600" />
+                      <span>تجربة مدرب القراءة المضيء</span>
+                    </a>
+                    <SpeechAudioButton 
+                      text="مدرب القراءة التفاعلي: اقرأ الكلمات المضيئة، والكلمة الصحيحة تضيء بالأخضر، مع توجيه صوتي لطيف." 
+                      size="md" 
+                    />
+                  </div>
+                </div>
+
+                <div className="lg:col-span-4 bg-white/10 backdrop-blur-md rounded-2xl p-5 border border-white/20 text-center space-y-3">
+                  <div className="flex items-center justify-center gap-2 text-sm font-black">
+                    <span className="px-2.5 py-1 rounded-lg bg-emerald-400 text-slate-950 shadow-xs">ذَهَبَ ✔</span>
+                    <span className="px-2.5 py-1 rounded-lg bg-rose-400 text-white shadow-xs">عُمَرُ ↻</span>
+                    <span className="px-2.5 py-1 rounded-lg bg-white/30 text-white">إِلَى...</span>
+                  </div>
+                  <p className="text-[11px] text-teal-100">
+                    تحليل فوري لمخارج الحروف مع صوت أنثوي دافئ يشجع طفلك ويكرر معه المقاطع الصعبة.
+                  </p>
+                </div>
+              </div>
+            </div>
+
           </div>
         </section>
 
