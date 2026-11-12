@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { DemoStore } from '@/lib/demo/demo-store';
 import { Child } from '@/types/models';
+import BrandLogo from '@/components/common/BrandLogo';
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -27,9 +28,11 @@ export default function Navbar() {
   const [currentRole, setCurrentRole] = useState<'parent' | 'specialist' | 'admin'>('parent');
   const [roleDropdownOpen, setRoleDropdownOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [isSuperAdmin, setIsSuperAdmin] = useState<boolean>(false);
 
   useEffect(() => {
     setIsLoggedIn(DemoStore.isLoggedIn());
+    setIsSuperAdmin(DemoStore.isSuperAdmin());
     setChildren(DemoStore.getChildren());
     setActiveChild(DemoStore.getActiveChild());
     setCurrentRole(DemoStore.getUserRole());
@@ -43,6 +46,7 @@ export default function Navbar() {
     };
     const handleAuthChange = () => {
       setIsLoggedIn(DemoStore.isLoggedIn());
+      setIsSuperAdmin(DemoStore.isSuperAdmin());
     };
 
     window.addEventListener('child-changed', handleChildChange);
@@ -69,10 +73,12 @@ export default function Navbar() {
   const navLinks = [
     { href: '/', label: 'الرئيسية' },
     { href: '/parent', label: 'لوحة ولي الأمر' },
-    { href: '/sessions', label: 'مكتبة الجلسات' },
-    { href: '/parent/consultation', label: 'الاستشارة الذكية' },
-    { href: '/specialist', label: 'الأخصائي' },
-    { href: '/admin', label: 'الإدارة' },
+    { href: '/sessions', label: 'الجلسات' },
+    { href: '/videos', label: 'فيديوهات التخاطب' },
+    { href: '/specialists', label: 'دليل الأخصائيين' },
+    { href: '/parent/consultation', label: 'استشر AI' },
+    ...(currentRole === 'specialist' || isSuperAdmin ? [{ href: '/specialist', label: 'لوحة الأخصائي' }] : []),
+    ...(isSuperAdmin ? [{ href: '/admin', label: 'الإدارة' }] : []),
   ];
 
   return (
@@ -82,18 +88,8 @@ export default function Navbar() {
           
           {/* Logo & Brand */}
           <div className="flex items-center gap-3">
-            <a href="/" className="flex items-center gap-2.5 group">
-              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center text-white shadow-md shadow-indigo-200 group-hover:scale-105 transition-transform">
-                <Sparkles className="w-6 h-6 text-yellow-200 animate-pulse" />
-              </div>
-              <div className="flex flex-col">
-                <span className="font-extrabold text-xl sm:text-2xl tracking-tight bg-gradient-to-l from-indigo-700 to-purple-600 bg-clip-text text-transparent leading-none">
-                  نُـطْـق
-                </span>
-                <span className="text-[10px] sm:text-xs text-indigo-500 font-semibold mt-1.5 hidden sm:inline tracking-normal">
-                  منصة الذكاء الاصطناعي لتأهيل الأطفال
-                </span>
-              </div>
+            <a href="/" className="group flex items-center">
+              <BrandLogo size="md" showSlogan={true} />
             </a>
           </div>
 
@@ -187,15 +183,17 @@ export default function Navbar() {
                         <Stethoscope className="w-4 h-4 text-emerald-500" />
                         لوحة الأخصائي (Specialist)
                       </button>
-                      <button
-                        onClick={() => changeRole('admin')}
-                        className={`w-full text-right px-4 py-2 text-xs font-medium flex items-center gap-2 hover:bg-amber-50 ${
-                          currentRole === 'admin' ? 'text-amber-600 font-bold bg-amber-50/50' : 'text-gray-700'
-                        }`}
-                      >
-                        <ShieldAlert className="w-4 h-4 text-amber-500" />
-                        لوحة الإدارة الكاملة (Admin)
-                      </button>
+                      {isSuperAdmin && (
+                        <button
+                          onClick={() => changeRole('admin')}
+                          className={`w-full text-right px-4 py-2 text-xs font-medium flex items-center gap-2 hover:bg-amber-50 ${
+                            currentRole === 'admin' ? 'text-amber-600 font-bold bg-amber-50/50' : 'text-gray-700'
+                          }`}
+                        >
+                          <ShieldAlert className="w-4 h-4 text-amber-500" />
+                          لوحة الإدارة الكاملة (Admin)
+                        </button>
+                      )}
                     </div>
                   )}
                 </div>

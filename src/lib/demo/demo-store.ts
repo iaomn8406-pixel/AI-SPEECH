@@ -1,7 +1,28 @@
 'use client';
 
-import { Child, SessionResult, ChildGoal, ConsultationMessage, Session } from '@/types/models';
-import { DEMO_CHILDREN, DEMO_SESSION_RESULTS, DEMO_GOALS, DEMO_CONSULTATION_MESSAGES } from './sample-data';
+import { 
+  Child, 
+  SessionResult, 
+  ChildGoal, 
+  ConsultationMessage, 
+  Session, 
+  RegisteredAccount, 
+  VideoCategory, 
+  EducationalVideo, 
+  SpecialistPost 
+} from '@/types/models';
+import { 
+  DEMO_CHILDREN, 
+  DEMO_SESSION_RESULTS, 
+  DEMO_GOALS, 
+  DEMO_CONSULTATION_MESSAGES,
+  SUPER_ADMIN_EMAIL,
+  SUPER_ADMIN_PASS,
+  DEMO_REGISTERED_ACCOUNTS,
+  DEMO_VIDEO_CATEGORIES,
+  DEMO_EDUCATIONAL_VIDEOS,
+  DEMO_SPECIALIST_POSTS
+} from './sample-data';
 import { PREBUILT_SESSIONS } from './prebuilt-curriculum';
 
 const STORAGE_KEYS = {
@@ -17,6 +38,11 @@ const STORAGE_KEYS = {
   CUSTOM_API_KEY: 'ai_speech_custom_api_key',
   CUSTOM_PROVIDER_CONFIG: 'ai_speech_custom_provider_config',
   PREFERRED_VOICE: 'ai_speech_preferred_voice',
+  REGISTERED_ACCOUNTS: 'ai_speech_registered_accounts',
+  EDUCATIONAL_VIDEOS: 'ai_speech_educational_videos',
+  VIDEO_CATEGORIES: 'ai_speech_video_categories',
+  SPECIALIST_POSTS: 'ai_speech_specialist_posts',
+  FOLLOWED_SPECIALISTS: 'ai_speech_followed_specialists',
 };
 
 export class DemoStore {
@@ -44,6 +70,165 @@ export class DemoStore {
   static getUserEmail(): string {
     if (typeof window === 'undefined') return '';
     return localStorage.getItem(STORAGE_KEYS.USER_EMAIL) || 'parent@aispeech.com';
+  }
+
+  static isSuperAdmin(): boolean {
+    if (typeof window === 'undefined') return false;
+    const email = (this.getUserEmail() || '').trim().toLowerCase();
+    return email === SUPER_ADMIN_EMAIL.toLowerCase();
+  }
+
+  // --- Registered Accounts & Admin Control ---
+  static getRegisteredAccounts(): RegisteredAccount[] {
+    if (typeof window === 'undefined') return DEMO_REGISTERED_ACCOUNTS;
+    const stored = localStorage.getItem(STORAGE_KEYS.REGISTERED_ACCOUNTS);
+    if (!stored) {
+      localStorage.setItem(STORAGE_KEYS.REGISTERED_ACCOUNTS, JSON.stringify(DEMO_REGISTERED_ACCOUNTS));
+      return DEMO_REGISTERED_ACCOUNTS;
+    }
+    try {
+      return JSON.parse(stored);
+    } catch {
+      return DEMO_REGISTERED_ACCOUNTS;
+    }
+  }
+
+  static addRegisteredAccount(account: RegisteredAccount): void {
+    if (typeof window === 'undefined') return;
+    const accounts = this.getRegisteredAccounts();
+    const updated = [account, ...accounts.filter(a => a.email.toLowerCase() !== account.email.toLowerCase())];
+    localStorage.setItem(STORAGE_KEYS.REGISTERED_ACCOUNTS, JSON.stringify(updated));
+    window.dispatchEvent(new Event('accounts-updated'));
+  }
+
+  static verifyPromoCode(code: string): { valid: boolean; specialist?: RegisteredAccount } {
+    if (!code || !code.trim()) return { valid: false };
+    const clean = code.trim().toUpperCase();
+    const accounts = this.getRegisteredAccounts();
+    const found = accounts.find(a => a.role === 'specialist' && a.promo_code?.toUpperCase() === clean);
+    if (found) {
+      return { valid: true, specialist: found };
+    }
+    return { valid: false };
+  }
+
+  // --- Educational Videos Library ---
+  static getVideoCategories(): VideoCategory[] {
+    if (typeof window === 'undefined') return DEMO_VIDEO_CATEGORIES;
+    const stored = localStorage.getItem(STORAGE_KEYS.VIDEO_CATEGORIES);
+    if (!stored) {
+      localStorage.setItem(STORAGE_KEYS.VIDEO_CATEGORIES, JSON.stringify(DEMO_VIDEO_CATEGORIES));
+      return DEMO_VIDEO_CATEGORIES;
+    }
+    try {
+      return JSON.parse(stored);
+    } catch {
+      return DEMO_VIDEO_CATEGORIES;
+    }
+  }
+
+  static addVideoCategory(cat: VideoCategory): void {
+    if (typeof window === 'undefined') return;
+    const cats = this.getVideoCategories();
+    const updated = [...cats, cat];
+    localStorage.setItem(STORAGE_KEYS.VIDEO_CATEGORIES, JSON.stringify(updated));
+    window.dispatchEvent(new Event('videos-updated'));
+  }
+
+  static getEducationalVideos(categoryId?: string): EducationalVideo[] {
+    if (typeof window === 'undefined') return DEMO_EDUCATIONAL_VIDEOS;
+    const stored = localStorage.getItem(STORAGE_KEYS.EDUCATIONAL_VIDEOS);
+    let list: EducationalVideo[] = DEMO_EDUCATIONAL_VIDEOS;
+    if (stored) {
+      try {
+        list = JSON.parse(stored);
+      } catch {
+        list = DEMO_EDUCATIONAL_VIDEOS;
+      }
+    } else {
+      localStorage.setItem(STORAGE_KEYS.EDUCATIONAL_VIDEOS, JSON.stringify(DEMO_EDUCATIONAL_VIDEOS));
+    }
+    if (categoryId && categoryId !== 'all') {
+      return list.filter(v => v.category_id === categoryId);
+    }
+    return list;
+  }
+
+  static addEducationalVideo(videoData: Omit<EducationalVideo, 'id' | 'views_count' | 'likes_count' | 'created_at'>): EducationalVideo {
+    const list = this.getEducationalVideos();
+    const newVideo: EducationalVideo = {
+      ...videoData,
+      id: `vid-${Date.now()}`,
+      views_count: 1,
+      likes_count: 0,
+      created_at: new Date().toISOString(),
+    };
+    const updated = [newVideo, ...list];
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(STORAGE_KEYS.EDUCATIONAL_VIDEOS, JSON.stringify(updated));
+      window.dispatchEvent(new Event('videos-updated'));
+    }
+    return newVideo;
+  }
+
+  // --- Specialist Posts & Feed ---
+  static getSpecialistPosts(): SpecialistPost[] {
+    if (typeof window === 'undefined') return DEMO_SPECIALIST_POSTS;
+    const stored = localStorage.getItem(STORAGE_KEYS.SPECIALIST_POSTS);
+    if (!stored) {
+      localStorage.setItem(STORAGE_KEYS.SPECIALIST_POSTS, JSON.stringify(DEMO_SPECIALIST_POSTS));
+      return DEMO_SPECIALIST_POSTS;
+    }
+    try {
+      return JSON.parse(stored);
+    } catch {
+      return DEMO_SPECIALIST_POSTS;
+    }
+  }
+
+  static addSpecialistPost(postData: Omit<SpecialistPost, 'id' | 'likes_count' | 'created_at'>): SpecialistPost {
+    const posts = this.getSpecialistPosts();
+    const newPost: SpecialistPost = {
+      ...postData,
+      id: `post-${Date.now()}`,
+      likes_count: 0,
+      created_at: 'الآن',
+    };
+    const updated = [newPost, ...posts];
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(STORAGE_KEYS.SPECIALIST_POSTS, JSON.stringify(updated));
+      window.dispatchEvent(new Event('posts-updated'));
+    }
+    return newPost;
+  }
+
+  // --- Following Specialists ---
+  static getFollowedSpecialistIds(): string[] {
+    if (typeof window === 'undefined') return ['acc-spec-aml'];
+    const stored = localStorage.getItem(STORAGE_KEYS.FOLLOWED_SPECIALISTS);
+    if (!stored) return ['acc-spec-aml'];
+    try {
+      return JSON.parse(stored);
+    } catch {
+      return ['acc-spec-aml'];
+    }
+  }
+
+  static toggleFollowSpecialist(specialistId: string): boolean {
+    if (typeof window === 'undefined') return false;
+    const followed = this.getFollowedSpecialistIds();
+    let updated: string[];
+    let isNowFollowing: boolean;
+    if (followed.includes(specialistId)) {
+      updated = followed.filter(id => id !== specialistId);
+      isNowFollowing = false;
+    } else {
+      updated = [...followed, specialistId];
+      isNowFollowing = true;
+    }
+    localStorage.setItem(STORAGE_KEYS.FOLLOWED_SPECIALISTS, JSON.stringify(updated));
+    window.dispatchEvent(new Event('follow-changed'));
+    return isNowFollowing;
   }
 
   // --- API Key Status ---

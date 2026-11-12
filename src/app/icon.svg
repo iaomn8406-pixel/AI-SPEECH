@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4F46E5" />
+      <stop offset="50%" stop-color="#7C3AED" />
+      <stop offset="100%" stop-color="#EC4899" />
+    </linearGradient>
+    <linearGradient id="wave-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FDE047" />
+      <stop offset="100%" stop-color="#FCD34D" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Outer Rounded Shield / Badge -->
+  <rect width="64" height="64" rx="18" fill="url(#bg-grad)" />
+  
+  <!-- Stylized Speech Bubble & Child Smile -->
+  <path d="M16 22C16 16.4772 20.4772 12 26 12H38C43.5228 12 48 16.4772 48 22V34C48 39.5228 43.5228 44 38 44H24L17 50V43.2C16.36 42.27 16 41.18 16 40V22Z" fill="white" fill-opacity="0.2" />
+  
+  <!-- Sound Waves (Left, Center, Right) -->
+  <rect x="23" y="24" width="4" height="12" rx="2" fill="white" />
+  <rect x="30" y="19" width="4" height="22" rx="2" fill="#FDE047" />
+  <rect x="37" y="24" width="4" height="12" rx="2" fill="white" />
+  
+  <!-- Sparkle Star on top corner -->
+  <path d="M47 15L48.5 19.5L53 21L48.5 22.5L47 27L45.5 22.5L41 21L45.5 19.5L47 15Z" fill="#FDE047" />
+</svg>

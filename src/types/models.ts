@@ -54,9 +54,87 @@ export interface Child {
   social_level: number; // 1 to 5
   parent_notes?: string;
   specialist_notes?: string;
+  specialist_id?: string;
+  specialist_name?: string;
+  specialist_code?: string;
+  registration_mode?: 'independent' | 'specialist_linked';
   is_demo?: boolean;
   created_at: string;
   updated_at: string;
+}
+
+export interface RegisteredAccount {
+  id: string;
+  email: string;
+  name?: string;
+  full_name: string;
+  role: UserRole;
+  registration_type?: 'independent' | 'with_specialist';
+  linked_specialist_id?: string;
+  linked_specialist_code?: string;
+  linked_specialist_name?: string;
+  promo_code?: string;
+  specialization?: string;
+  bio?: string;
+  clinic_name?: string;
+  followers_count?: number;
+  last_active_at: string;
+  last_seen?: string;
+  is_online?: boolean;
+  created_at: string;
+  journey_summary?: string;
+  journey_stage?: string;
+  child_name?: string;
+  children_count?: number;
+  assigned_children_count?: number;
+  sessions_completed_count?: number;
+  sessions_count?: number;
+  improvement_rate?: number;
+}
+
+export interface VideoCategory {
+  id: string;
+  name_ar: string;
+  title_ar?: string;
+  description_ar?: string;
+  icon?: string;
+  created_by_specialist_id?: string;
+}
+
+export interface EducationalVideo {
+  id: string;
+  title?: string;
+  title_ar: string;
+  description?: string;
+  description_ar: string;
+  category_id: string;
+  category_name_ar?: string;
+  specialist_id: string;
+  specialist_name: string;
+  specialist_title: string;
+  video_url: string;
+  thumbnail_url?: string;
+  thumbnail_emoji?: string;
+  duration_label?: string;
+  duration?: string;
+  target_audience?: string;
+  views_count: number;
+  likes_count: number;
+  created_at: string;
+}
+
+export interface SpecialistPost {
+  id: string;
+  specialist_id: string;
+  specialist_name: string;
+  specialist_title: string;
+  specialist_avatar?: string;
+  content?: string;
+  content_ar: string;
+  tag_ar: string;
+  tags?: string[];
+  likes_count: number;
+  created_at: string;
 }
 
 export interface LearningSpecialization {

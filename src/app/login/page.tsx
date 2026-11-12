@@ -4,8 +4,10 @@ import React, { useState } from 'react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import MobileNav from '@/components/layout/MobileNav';
+import BrandLogo from '@/components/common/BrandLogo';
 import { DemoStore } from '@/lib/demo/demo-store';
-import { Sparkles, Mail, Lock, ArrowLeft, User, Stethoscope, ShieldAlert, CheckCircle2 } from 'lucide-react';
+import { SUPER_ADMIN_EMAIL, SUPER_ADMIN_PASS } from '@/lib/demo/sample-data';
+import { Sparkles, Mail, Lock, ArrowLeft, User, Stethoscope, ShieldAlert, CheckCircle2, Crown } from 'lucide-react';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -15,17 +17,29 @@ export default function LoginPage() {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    DemoStore.login(email || 'parent@aispeech.com', 'parent');
+    
+    // Check if logging in as Super Admin
+    const isSuper = email.trim().toLowerCase() === SUPER_ADMIN_EMAIL.toLowerCase();
+    const targetRole = isSuper ? 'admin' : (email.includes('dr.') || email.includes('spec') ? 'specialist' : 'parent');
+
+    DemoStore.login(email.trim() || 'parent@aispeech.com', targetRole);
     setTimeout(() => {
-      window.location.href = '/parent';
+      if (isSuper || targetRole === 'admin') window.location.href = '/admin';
+      else if (targetRole === 'specialist') window.location.href = '/specialist';
+      else window.location.href = '/parent';
     }, 400);
   };
 
-  const handleDemoLogin = (role: 'parent' | 'specialist' | 'admin') => {
-    DemoStore.login(`${role}@aispeech.com`, role);
+  const handleSuperAdminLogin = () => {
+    DemoStore.login(SUPER_ADMIN_EMAIL, 'admin');
+    window.location.href = '/admin';
+  };
+
+  const handleDemoLogin = (role: 'parent' | 'specialist') => {
+    const demoEmail = role === 'specialist' ? 'dr.amal@example.com' : 'parent.ahmed@example.com';
+    DemoStore.login(demoEmail, role);
     if (role === 'parent') window.location.href = '/parent';
     else if (role === 'specialist') window.location.href = '/specialist';
-    else if (role === 'admin') window.location.href = '/admin';
   };
 
   return (
@@ -36,42 +50,58 @@ export default function LoginPage() {
         <div className="max-w-md w-full bg-white rounded-3xl p-6 sm:p-8 border border-gray-200 shadow-xl space-y-6">
           
           <div className="text-center space-y-2">
-            <div className="w-12 h-12 mx-auto rounded-2xl bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center text-white shadow-md shadow-indigo-100">
-              <Sparkles className="w-6 h-6 text-yellow-300" />
+            <div className="flex justify-center mb-1">
+              <BrandLogo size="md" showSlogan={false} />
             </div>
-            <h1 className="text-2xl font-black text-gray-900">تسجيل الدخول إلى نُطق</h1>
+            <h1 className="text-xl sm:text-2xl font-black text-gray-900">تسجيل الدخول إلى نُطق</h1>
             <p className="text-xs text-gray-500">مرحباً بك مجدداً في منصة تأهيل وتطوير مهارات طفلك</p>
           </div>
 
-          {/* Quick Demo Logins Section */}
-          <div className="p-4 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl border border-indigo-100 space-y-2.5">
-            <p className="text-xs font-black text-indigo-900 text-center">
-              الدخول السريع بضغطة واحدة (حسابات Demo):
+          {/* Super Admin Quick Access Banner */}
+          <div className="p-3.5 bg-gradient-to-r from-amber-500/10 via-purple-500/10 to-indigo-500/10 rounded-2xl border-2 border-amber-300 space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-black text-gray-900 flex items-center gap-1.5">
+                <Crown className="w-4 h-4 text-amber-600" />
+                <span>حساب مالك المنصة والمدير العام:</span>
+              </span>
+              <span className="text-[10px] font-mono bg-amber-100 text-amber-900 font-bold px-2 py-0.5 rounded-full">
+                Super Admin
+              </span>
+            </div>
+            <p className="text-[11px] text-gray-600">
+              البريد: <strong className="text-indigo-900 font-mono">{SUPER_ADMIN_EMAIL}</strong>
             </p>
-            <div className="grid grid-cols-3 gap-2">
+            <button
+              type="button"
+              onClick={handleSuperAdminLogin}
+              className="w-full py-2.5 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-600 hover:to-orange-600 text-white font-black text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <Crown className="w-4 h-4" />
+              <span>دخول فوري بحساب المدير العام (Omnia)</span>
+            </button>
+          </div>
+
+          {/* Quick Demo Logins Section */}
+          <div className="p-3 bg-gray-50 rounded-2xl border border-gray-100 space-y-2">
+            <p className="text-xs font-bold text-gray-600 text-center">
+              أو الدخول التجريبي السريع:
+            </p>
+            <div className="grid grid-cols-2 gap-2">
               <button
                 type="button"
                 onClick={() => handleDemoLogin('parent')}
-                className="p-2 bg-white hover:bg-indigo-600 hover:text-white text-indigo-950 rounded-xl text-[11px] font-bold border border-indigo-100 shadow-2xs transition-colors flex flex-col items-center gap-1 cursor-pointer"
+                className="p-2.5 bg-white hover:bg-indigo-50 text-indigo-950 rounded-xl text-xs font-bold border border-indigo-100 shadow-2xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
               >
                 <User className="w-4 h-4 text-indigo-600" />
-                <span>ولي أمر</span>
+                <span>حساب ولي أمر</span>
               </button>
               <button
                 type="button"
                 onClick={() => handleDemoLogin('specialist')}
-                className="p-2 bg-white hover:bg-emerald-600 hover:text-white text-emerald-950 rounded-xl text-[11px] font-bold border border-emerald-100 shadow-2xs transition-colors flex flex-col items-center gap-1 cursor-pointer"
+                className="p-2.5 bg-white hover:bg-emerald-50 text-emerald-950 rounded-xl text-xs font-bold border border-emerald-100 shadow-2xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
               >
                 <Stethoscope className="w-4 h-4 text-emerald-600" />
-                <span>أخصائي</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => handleDemoLogin('admin')}
-                className="p-2 bg-white hover:bg-amber-600 hover:text-white text-amber-950 rounded-xl text-[11px] font-bold border border-amber-100 shadow-2xs transition-colors flex flex-col items-center gap-1 cursor-pointer"
-              >
-                <ShieldAlert className="w-4 h-4 text-amber-600" />
-                <span>المدير</span>
+                <span>حساب أخصائي</span>
               </button>
             </div>
           </div>
@@ -86,7 +116,7 @@ export default function LoginPage() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="parent@example.com"
+                  placeholder="name@example.com"
                   className="w-full pr-10 pl-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs sm:text-sm focus:outline-hidden focus:border-indigo-500 text-gray-900"
                 />
               </div>
@@ -115,9 +145,9 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-black text-sm rounded-xl shadow-md hover:brightness-105 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full py-3 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white font-black text-sm rounded-xl shadow-md hover:brightness-105 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
-              <span>{isLoading ? 'جاري التحقق...' : 'تسجيل الدخول'}</span>
+              <span>{isLoading ? 'جاري تسجيل الدخول...' : 'تسجيل الدخول'}</span>
               <ArrowLeft className="w-4 h-4" />
             </button>
           </form>

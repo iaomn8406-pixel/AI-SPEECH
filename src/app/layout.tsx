@@ -5,7 +5,11 @@ export const metadata: Metadata = {
   title: "نُـطْـق | منصة الذكاء الاصطناعي لتأهيل وتطوير مهارات الأطفال",
   description: "المنصة الذكية المتكاملة لمساعدة الأطفال في علاج تأخر الكلام، تصحيح مخارج الحروف، عسر القراءة، وتنمية مهارات التواصل الاجتماعي.",
   icons: {
-    icon: "/favicon.ico",
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/favicon.ico' },
+    ],
+    apple: '/icon.svg',
   },
 };
 
