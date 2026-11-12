@@ -7,39 +7,64 @@ import MobileNav from '@/components/layout/MobileNav';
 import BrandLogo from '@/components/common/BrandLogo';
 import { DemoStore } from '@/lib/demo/demo-store';
 import { SUPER_ADMIN_EMAIL, SUPER_ADMIN_PASS } from '@/lib/demo/sample-data';
-import { Sparkles, Mail, Lock, ArrowLeft, User, Stethoscope, ShieldAlert, CheckCircle2, Crown } from 'lucide-react';
+import { Mail, Lock, ArrowLeft, AlertCircle } from 'lucide-react';
+import Link from 'next/link';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMessage('');
     setIsLoading(true);
-    
-    // Check if logging in as Super Admin
-    const isSuper = email.trim().toLowerCase() === SUPER_ADMIN_EMAIL.toLowerCase();
-    const targetRole = isSuper ? 'admin' : (email.includes('dr.') || email.includes('spec') ? 'specialist' : 'parent');
 
-    DemoStore.login(email.trim() || 'parent@aispeech.com', targetRole);
+    const cleanEmail = email.trim().toLowerCase();
+    const cleanPass = password.trim();
+
+    // 1. Strict validation for Super Admin
+    if (cleanEmail === SUPER_ADMIN_EMAIL.toLowerCase()) {
+      if (cleanPass !== SUPER_ADMIN_PASS) {
+        setIsLoading(false);
+        setErrorMessage('بيانات الدخول غير صحيحة، يرجى التأكد من البريد وكلمة المرور.');
+        return;
+      }
+      DemoStore.login(SUPER_ADMIN_EMAIL, 'admin');
+      setTimeout(() => {
+        window.location.href = '/admin';
+      }, 400);
+      return;
+    }
+
+    // 2. Validation for minimum password length
+    if (cleanPass.length < 6) {
+      setIsLoading(false);
+      setErrorMessage('يجب أن تتكون كلمة المرور من 6 أحرف أو أرقام على الأقل.');
+      return;
+    }
+
+    // 3. Authenticate regular accounts (Specialist vs Parent)
+    const accounts = DemoStore.getRegisteredAccounts();
+    const found = accounts.find(a => a.email.toLowerCase() === cleanEmail);
+
+    let targetRole: 'parent' | 'specialist' | 'admin' = 'parent';
+    if (found) {
+      targetRole = found.role;
+    } else if (cleanEmail.includes('dr.') || cleanEmail.includes('spec') || cleanEmail.includes('specialist')) {
+      targetRole = 'specialist';
+    }
+
+    DemoStore.login(cleanEmail, targetRole);
+
     setTimeout(() => {
-      if (isSuper || targetRole === 'admin') window.location.href = '/admin';
-      else if (targetRole === 'specialist') window.location.href = '/specialist';
-      else window.location.href = '/parent';
+      if (targetRole === 'specialist') {
+        window.location.href = '/specialist';
+      } else {
+        window.location.href = '/parent';
+      }
     }, 400);
-  };
-
-  const handleSuperAdminLogin = () => {
-    DemoStore.login(SUPER_ADMIN_EMAIL, 'admin');
-    window.location.href = '/admin';
-  };
-
-  const handleDemoLogin = (role: 'parent' | 'specialist') => {
-    const demoEmail = role === 'specialist' ? 'dr.amal@example.com' : 'parent.ahmed@example.com';
-    DemoStore.login(demoEmail, role);
-    if (role === 'parent') window.location.href = '/parent';
-    else if (role === 'specialist') window.location.href = '/specialist';
   };
 
   return (
@@ -54,57 +79,15 @@ export default function LoginPage() {
               <BrandLogo size="md" showSlogan={false} />
             </div>
             <h1 className="text-xl sm:text-2xl font-black text-gray-900">تسجيل الدخول إلى نُطق</h1>
-            <p className="text-xs text-gray-500">مرحباً بك مجدداً في منصة تأهيل وتطوير مهارات طفلك</p>
+            <p className="text-xs text-gray-500">أدخل بيانات حسابك للمتابعة والوصول إلى سجلات التدريب</p>
           </div>
 
-          {/* Super Admin Quick Access Banner */}
-          <div className="p-3.5 bg-gradient-to-r from-amber-500/10 via-purple-500/10 to-indigo-500/10 rounded-2xl border-2 border-amber-300 space-y-2">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-black text-gray-900 flex items-center gap-1.5">
-                <Crown className="w-4 h-4 text-amber-600" />
-                <span>حساب مالك المنصة والمدير العام:</span>
-              </span>
-              <span className="text-[10px] font-mono bg-amber-100 text-amber-900 font-bold px-2 py-0.5 rounded-full">
-                Super Admin
-              </span>
+          {errorMessage && (
+            <div className="p-3.5 bg-red-50 border border-red-200 text-red-700 rounded-2xl text-xs flex items-center gap-2 animate-shake">
+              <AlertCircle className="w-4 h-4 shrink-0 text-red-600" />
+              <span>{errorMessage}</span>
             </div>
-            <p className="text-[11px] text-gray-600">
-              البريد: <strong className="text-indigo-900 font-mono">{SUPER_ADMIN_EMAIL}</strong>
-            </p>
-            <button
-              type="button"
-              onClick={handleSuperAdminLogin}
-              className="w-full py-2.5 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-600 hover:to-orange-600 text-white font-black text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
-            >
-              <Crown className="w-4 h-4" />
-              <span>دخول فوري بحساب المدير العام (Omnia)</span>
-            </button>
-          </div>
-
-          {/* Quick Demo Logins Section */}
-          <div className="p-3 bg-gray-50 rounded-2xl border border-gray-100 space-y-2">
-            <p className="text-xs font-bold text-gray-600 text-center">
-              أو الدخول التجريبي السريع:
-            </p>
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                type="button"
-                onClick={() => handleDemoLogin('parent')}
-                className="p-2.5 bg-white hover:bg-indigo-50 text-indigo-950 rounded-xl text-xs font-bold border border-indigo-100 shadow-2xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
-              >
-                <User className="w-4 h-4 text-indigo-600" />
-                <span>حساب ولي أمر</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => handleDemoLogin('specialist')}
-                className="p-2.5 bg-white hover:bg-emerald-50 text-emerald-950 rounded-xl text-xs font-bold border border-emerald-100 shadow-2xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
-              >
-                <Stethoscope className="w-4 h-4 text-emerald-600" />
-                <span>حساب أخصائي</span>
-              </button>
-            </div>
-          </div>
+          )}
 
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
@@ -125,9 +108,9 @@ export default function LoginPage() {
             <div>
               <div className="flex items-center justify-between mb-1">
                 <label className="block text-xs font-bold text-gray-700">كلمة المرور</label>
-                <a href="/forgot-password" className="text-[11px] font-bold text-indigo-600 hover:underline">
+                <Link href="/forgot-password" className="text-[11px] font-bold text-indigo-600 hover:underline">
                   نسيت كلمة المرور؟
-                </a>
+                </Link>
               </div>
               <div className="relative">
                 <Lock className="w-4 h-4 text-gray-400 absolute right-3.5 top-3.5" />
@@ -145,18 +128,18 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-3 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white font-black text-sm rounded-xl shadow-md hover:brightness-105 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full py-3 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-700 hover:to-pink-700 text-white font-black text-sm rounded-xl shadow-md hover:shadow-indigo-200 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
             >
-              <span>{isLoading ? 'جاري تسجيل الدخول...' : 'تسجيل الدخول'}</span>
+              <span>{isLoading ? 'جاري التحقق والدخول...' : 'تسجيل الدخول'}</span>
               <ArrowLeft className="w-4 h-4" />
             </button>
           </form>
 
-          <p className="text-center text-xs text-gray-500">
+          <p className="text-center text-xs text-gray-500 pt-2 border-t border-gray-100">
             ليس لديك حساب بعد؟{' '}
-            <a href="/register" className="font-bold text-indigo-600 hover:underline">
+            <Link href="/register" className="font-bold text-indigo-600 hover:underline">
               إنشاء حساب جديد
-            </a>
+            </Link>
           </p>
         </div>
       </main>

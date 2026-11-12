@@ -28,13 +28,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </div>
             <div className="space-y-2">
               <h2 className="text-xl font-black text-gray-900">
-                صلاحيات المدير الرئيسي مطلوبة
+                منطقة إدارية محمية ومحظورة
               </h2>
               <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
-                لوحة الإدارة الشاملة وإعدادات الذكاء الاصطناعي مخصصة حصرياً لحساب مالك المنصة الرئيسي:
-              </p>
-              <p className="text-xs font-mono font-bold bg-gray-100 p-2 rounded-xl text-indigo-700">
-                {SUPER_ADMIN_EMAIL}
+                لوحة الإدارة المركزية وإعدادات النظام مخصصة حصرياً لمالك المنصة وإدارتها العليا. لا تملك صلاحية الوصول إلى هذه الصفحة.
               </p>
             </div>
             <div className="pt-2 flex flex-col gap-2">
@@ -42,7 +39,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 href="/login"
                 className="w-full py-2.5 bg-indigo-600 text-white font-extrabold text-xs sm:text-sm rounded-xl hover:bg-indigo-700 transition-colors"
               >
-                تسجيل الدخول بحساب المدير الرئيسي
+                الذهاب لصفحة تسجيل الدخول
               </a>
               <a
                 href="/parent"

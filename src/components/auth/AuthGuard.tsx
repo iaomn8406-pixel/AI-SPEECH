@@ -49,31 +49,16 @@ export default function AuthGuard({ children }: AuthGuardProps) {
             </p>
           </div>
 
-          {/* Quick Demo Access Button */}
-          <div className="p-4 bg-indigo-50/60 rounded-2xl border border-indigo-100 space-y-3">
-            <p className="text-xs font-black text-indigo-950">هل تود الدخول السريع لتجربة المنصة؟</p>
-            <button
-              onClick={() => {
-                DemoStore.login('parent@demo.com', 'parent');
-                setIsAuth(true);
-              }}
-              className="w-full py-3 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white font-black text-xs sm:text-sm rounded-xl shadow-md hover:brightness-105 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
-            >
-              <Sparkles className="w-4 h-4 text-yellow-300" />
-              <span>دخول فوري بحساب ولي الأمر التجريبي</span>
-            </button>
-          </div>
-
-          <div className="flex items-center gap-3">
+          <div className="flex flex-col sm:flex-row items-center gap-3">
             <a
               href="/login"
-              className="flex-1 py-3 bg-gray-100 hover:bg-gray-200 text-gray-800 font-extrabold text-xs sm:text-sm rounded-xl transition-colors text-center"
+              className="w-full sm:flex-1 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-extrabold text-xs sm:text-sm rounded-xl transition-all shadow-md text-center"
             >
-              صفحة تسجيل الدخول
+              تسجيل الدخول
             </a>
             <a
               href="/register"
-              className="flex-1 py-3 border border-indigo-200 text-indigo-700 hover:bg-indigo-50 font-extrabold text-xs sm:text-sm rounded-xl transition-colors text-center"
+              className="w-full sm:flex-1 py-3 border border-indigo-200 text-indigo-700 hover:bg-indigo-50 font-extrabold text-xs sm:text-sm rounded-xl transition-colors text-center"
             >
               إنشاء حساب جديد
             </a>
