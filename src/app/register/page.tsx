@@ -17,10 +17,10 @@ export default function RegisterPage() {
   const handleRegister = (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    DemoStore.setUserRole(role);
+    DemoStore.login(email || 'user@aispeech.com', role);
     setTimeout(() => {
       window.location.href = role === 'parent' ? '/parent' : '/specialist';
-    }, 800);
+    }, 400);
   };
 
   return (

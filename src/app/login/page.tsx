@@ -15,14 +15,14 @@ export default function LoginPage() {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    DemoStore.setUserRole('parent');
+    DemoStore.login(email || 'parent@aispeech.com', 'parent');
     setTimeout(() => {
       window.location.href = '/parent';
-    }, 800);
+    }, 400);
   };
 
   const handleDemoLogin = (role: 'parent' | 'specialist' | 'admin') => {
-    DemoStore.setUserRole(role);
+    DemoStore.login(`${role}@aispeech.com`, role);
     if (role === 'parent') window.location.href = '/parent';
     else if (role === 'specialist') window.location.href = '/specialist';
     else if (role === 'admin') window.location.href = '/admin';
