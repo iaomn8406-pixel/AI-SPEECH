@@ -15,6 +15,7 @@ const STORAGE_KEYS = {
   IS_LOGGED_IN: 'ai_speech_is_logged_in',
   USER_EMAIL: 'ai_speech_user_email',
   CUSTOM_API_KEY: 'ai_speech_custom_api_key',
+  CUSTOM_PROVIDER_CONFIG: 'ai_speech_custom_provider_config',
   PREFERRED_VOICE: 'ai_speech_preferred_voice',
 };
 
@@ -69,6 +70,28 @@ export class DemoStore {
   static setCustomApiKey(key: string): void {
     if (typeof window === 'undefined') return;
     localStorage.setItem(STORAGE_KEYS.CUSTOM_API_KEY, key.trim());
+    window.dispatchEvent(new Event('api-key-changed'));
+  }
+
+  static getCustomProviderConfig(): { provider: string; baseUrl?: string; modelName?: string; apiKey?: string } {
+    if (typeof window === 'undefined') return { provider: 'gemini' };
+    const stored = localStorage.getItem(STORAGE_KEYS.CUSTOM_PROVIDER_CONFIG);
+    if (stored) {
+      try {
+        return JSON.parse(stored);
+      } catch {
+        // Fallback
+      }
+    }
+    return { provider: 'gemini' };
+  }
+
+  static setCustomProviderConfig(config: { provider: string; baseUrl?: string; modelName?: string; apiKey?: string }): void {
+    if (typeof window === 'undefined') return;
+    localStorage.setItem(STORAGE_KEYS.CUSTOM_PROVIDER_CONFIG, JSON.stringify(config));
+    if (config.apiKey) {
+      localStorage.setItem(STORAGE_KEYS.CUSTOM_API_KEY, config.apiKey.trim());
+    }
     window.dispatchEvent(new Event('api-key-changed'));
   }
 

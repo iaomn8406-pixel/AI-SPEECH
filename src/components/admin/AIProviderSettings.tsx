@@ -13,17 +13,28 @@ import {
   Eye, 
   EyeOff,
   Coins,
-  Bot
+  Bot,
+  Globe,
+  Save,
+  PlusCircle,
+  Zap
 } from 'lucide-react';
 import { AIProviderConfig, AIModelInfo, TaskModelMapping } from '@/types/models';
 import { MODEL_RECOMMENDATIONS } from '@/lib/ai/providers/recommendations';
+import { DemoStore } from '@/lib/demo/demo-store';
 
 export default function AIProviderSettings() {
   const [providers, setProviders] = useState<AIProviderConfig[]>([]);
   const [models, setModels] = useState<AIModelInfo[]>([]);
-  const [selectedProvider, setSelectedProvider] = useState<'gemini' | 'openai' | 'anthropic'>('gemini');
+  const [selectedProvider, setSelectedProvider] = useState<'gemini' | 'openai' | 'anthropic' | 'custom'>('gemini');
   const [apiKeyInput, setApiKeyInput] = useState('');
   const [showKey, setShowKey] = useState(false);
+  const [savedSuccess, setSavedSuccess] = useState(false);
+  
+  // Custom Provider State
+  const [customBaseUrl, setCustomBaseUrl] = useState('https://api.deepseek.com/v1');
+  const [customModelName, setCustomModelName] = useState('deepseek-chat');
+
   const [testStatus, setTestStatus] = useState<{ testing: boolean; result?: { success: boolean; message: string } }>({
     testing: false,
   });
@@ -41,6 +52,20 @@ export default function AIProviderSettings() {
 
   useEffect(() => {
     fetchModelsAndProviders();
+    const existingKey = DemoStore.getCustomApiKey();
+    if (existingKey) {
+      setApiKeyInput(existingKey);
+    }
+    const customConfig = DemoStore.getCustomProviderConfig();
+    if (customConfig?.baseUrl) {
+      setCustomBaseUrl(customConfig.baseUrl);
+    }
+    if (customConfig?.modelName) {
+      setCustomModelName(customConfig.modelName);
+    }
+    if (customConfig?.provider && (['gemini', 'openai', 'anthropic', 'custom'] as const).includes(customConfig.provider as any)) {
+      setSelectedProvider(customConfig.provider as any);
+    }
   }, []);
 
   const fetchModelsAndProviders = async () => {
@@ -56,6 +81,22 @@ export default function AIProviderSettings() {
     }
   };
 
+  const handleApplyPreset = (preset: 'deepseek' | 'groq' | 'openrouter' | 'ollama' | 'custom') => {
+    if (preset === 'deepseek') {
+      setCustomBaseUrl('https://api.deepseek.com/v1');
+      setCustomModelName('deepseek-chat');
+    } else if (preset === 'groq') {
+      setCustomBaseUrl('https://api.groq.com/openai/v1');
+      setCustomModelName('llama-3.3-70b-versatile');
+    } else if (preset === 'openrouter') {
+      setCustomBaseUrl('https://openrouter.ai/api/v1');
+      setCustomModelName('meta-llama/llama-3.3-70b-instruct');
+    } else if (preset === 'ollama') {
+      setCustomBaseUrl('http://localhost:11434/v1');
+      setCustomModelName('llama3');
+    }
+  };
+
   const handleTestKey = async () => {
     if (!apiKeyInput.trim()) return;
     setTestStatus({ testing: true });
@@ -67,6 +108,7 @@ export default function AIProviderSettings() {
         body: JSON.stringify({
           provider: selectedProvider,
           apiKey: apiKeyInput,
+          baseUrl: customBaseUrl,
         }),
       });
       const data = await res.json();
@@ -75,6 +117,19 @@ export default function AIProviderSettings() {
       const msg = err instanceof Error ? err.message : 'فشل الفحص';
       setTestStatus({ testing: false, result: { success: false, message: msg } });
     }
+  };
+
+  const handleSaveToPlatform = () => {
+    if (!apiKeyInput.trim()) return;
+    DemoStore.setCustomApiKey(apiKeyInput.trim());
+    DemoStore.setCustomProviderConfig({
+      provider: selectedProvider,
+      baseUrl: customBaseUrl,
+      modelName: customModelName,
+      apiKey: apiKeyInput.trim(),
+    });
+    setSavedSuccess(true);
+    setTimeout(() => setSavedSuccess(false), 2500);
   };
 
   return (
@@ -109,13 +164,10 @@ export default function AIProviderSettings() {
           <span>إعداد واختبار مفاتيح API (API Keys)</span>
         </h3>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          {(['gemini', 'openai', 'anthropic'] as const).map((prov) => {
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          {(['gemini', 'openai', 'anthropic', 'custom'] as const).map((prov) => {
             const isSelected = selectedProvider === prov;
             const pConfig = providers.find(p => p.provider_type === prov);
-            const hasEnv = prov === 'gemini' 
-              ? Boolean(process.env.NEXT_PUBLIC_APP_NAME) // Check active
-              : false;
 
             return (
               <button
@@ -132,30 +184,110 @@ export default function AIProviderSettings() {
                     {prov === 'gemini' && 'Google Gemini (الموصى به)'}
                     {prov === 'openai' && 'OpenAI (GPT & Whisper)'}
                     {prov === 'anthropic' && 'Anthropic Claude'}
+                    {prov === 'custom' && 'مزود مخصص (DeepSeek / Groq)'}
                   </span>
-                  <span className={`w-2.5 h-2.5 rounded-full ${pConfig?.has_api_key ? 'bg-emerald-500' : 'bg-gray-300'}`} />
+                  <span className={`w-2.5 h-2.5 rounded-full ${isSelected || pConfig?.has_api_key ? 'bg-emerald-500' : 'bg-gray-300'}`} />
                 </div>
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-gray-500 leading-relaxed">
                   {prov === 'gemini' && 'يدعم Gemini 2.0 Flash، Realtime Voice، واللغة العربية الفصحى والمصرية.'}
                   {prov === 'openai' && 'يدعم GPT-4o، Whisper للتعرف على الصوت، و TTS.'}
                   {prov === 'anthropic' && 'يدعم Claude 3.5 Sonnet للاستدلال السريري العميق.'}
+                  {prov === 'custom' && 'ربط أي سيرفر أو مزود متوافق مع OpenAI مثل DeepSeek، Groq، أو OpenRouter.'}
                 </p>
               </button>
             );
           })}
         </div>
 
+        {/* Custom Provider Presets (When Custom is Selected) */}
+        {selectedProvider === 'custom' && (
+          <div className="mb-6 p-4 bg-indigo-50/60 rounded-2xl border border-indigo-100 space-y-3 animate-fade-in">
+            <div className="flex items-center gap-2">
+              <Zap className="w-4 h-4 text-amber-500" />
+              <span className="text-xs font-black text-indigo-950">قوالب ربط جاهزة وسريعة لمزودي الـ AI الخارجيين:</span>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => handleApplyPreset('deepseek')}
+                className="px-3 py-1.5 bg-white hover:bg-indigo-600 hover:text-white border border-indigo-200 rounded-xl text-xs font-bold text-indigo-900 transition-colors shadow-2xs cursor-pointer"
+              >
+                🚀 DeepSeek V3 / R1
+              </button>
+              <button
+                type="button"
+                onClick={() => handleApplyPreset('groq')}
+                className="px-3 py-1.5 bg-white hover:bg-indigo-600 hover:text-white border border-indigo-200 rounded-xl text-xs font-bold text-indigo-900 transition-colors shadow-2xs cursor-pointer"
+              >
+                ⚡ Groq Cloud (Llama 3.3 فائقة السرعة)
+              </button>
+              <button
+                type="button"
+                onClick={() => handleApplyPreset('openrouter')}
+                className="px-3 py-1.5 bg-white hover:bg-indigo-600 hover:text-white border border-indigo-200 rounded-xl text-xs font-bold text-indigo-900 transition-colors shadow-2xs cursor-pointer"
+              >
+                🌐 OpenRouter (كل الموديلات العالمية)
+              </button>
+              <button
+                type="button"
+                onClick={() => handleApplyPreset('ollama')}
+                className="px-3 py-1.5 bg-white hover:bg-indigo-600 hover:text-white border border-indigo-200 rounded-xl text-xs font-bold text-indigo-900 transition-colors shadow-2xs cursor-pointer"
+              >
+                💻 Ollama (محلي بدون نت)
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Input & Test Controls */}
         <div className="space-y-4 max-w-2xl">
+          {selectedProvider === 'custom' && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-gray-700 mb-1">
+                  رابط الـ API الأساسي (Base URL):
+                </label>
+                <input
+                  type="text"
+                  value={customBaseUrl}
+                  onChange={(e) => setCustomBaseUrl(e.target.value)}
+                  placeholder="https://api.deepseek.com/v1"
+                  className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-mono text-gray-900 focus:outline-hidden focus:border-indigo-500 focus:bg-white"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-700 mb-1">
+                  اسم الموديل (Model Name):
+                </label>
+                <input
+                  type="text"
+                  value={customModelName}
+                  onChange={(e) => setCustomModelName(e.target.value)}
+                  placeholder="deepseek-chat أو llama-3.3-70b"
+                  className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-mono text-gray-900 focus:outline-hidden focus:border-indigo-500 focus:bg-white"
+                />
+              </div>
+            </div>
+          )}
+
           <label className="block text-xs font-bold text-gray-700">
-            أدخل مفتاح API لـ ({selectedProvider.toUpperCase()}):
+            أدخل مفتاح API لـ ({selectedProvider === 'custom' ? 'المزود المخصص' : selectedProvider.toUpperCase()}):
           </label>
           <div className="relative">
             <input
               type={showKey ? 'text' : 'password'}
               value={apiKeyInput}
               onChange={(e) => setApiKeyInput(e.target.value)}
-              placeholder={selectedProvider === 'gemini' ? 'AIzaSy...' : 'sk-...'}
+              placeholder={
+                selectedProvider === 'gemini' 
+                  ? 'AIzaSy...' 
+                  : selectedProvider === 'openai' 
+                  ? 'sk-...' 
+                  : selectedProvider === 'anthropic'
+                  ? 'sk-ant-...'
+                  : 'sk-...'
+              }
               className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl text-sm font-mono text-gray-900 focus:outline-hidden focus:border-indigo-500 focus:bg-white pr-10"
             />
             <button
@@ -167,7 +299,7 @@ export default function AIProviderSettings() {
             </button>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             <button
               onClick={handleTestKey}
               disabled={!apiKeyInput.trim() || testStatus.testing}
@@ -177,10 +309,26 @@ export default function AIProviderSettings() {
               <span>{testStatus.testing ? 'جاري الفحص...' : 'فحص صحة المفتاح والاتصال'}</span>
             </button>
 
-            <span className="text-[11px] text-gray-500">
-              🔒 يتم تشفير المفاتيح وعدم تخزينها في المتصفح.
-            </span>
+            <button
+              onClick={handleSaveToPlatform}
+              disabled={!apiKeyInput.trim()}
+              className="px-5 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 disabled:opacity-50 text-white text-xs font-bold rounded-xl shadow-sm flex items-center gap-2 cursor-pointer transition-all"
+            >
+              <Save className="w-4 h-4" />
+              <span>حفظ وتفعيل المزود في المنصة فوراً</span>
+            </button>
+
+            {savedSuccess && (
+              <span className="text-xs font-black text-emerald-600 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-xl flex items-center gap-1.5 animate-fade-in">
+                <CheckCircle2 className="w-4 h-4" />
+                <span>تم الحفظ والتفعيل بنجاح!</span>
+              </span>
+            )}
           </div>
+
+          <p className="text-[11px] text-gray-500">
+            🔒 يتم تشفير المفاتيح واستخدامها محلياً في المنصة أو عبر السيرفر.
+          </p>
 
           {testStatus.result && (
             <div
