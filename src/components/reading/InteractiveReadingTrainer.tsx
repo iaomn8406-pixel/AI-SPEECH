@@ -89,8 +89,16 @@ export default function InteractiveReadingTrainer() {
           setIsListening(false);
         };
 
-        recognition.onerror = () => {
+        recognition.onerror = (e: any) => {
           setIsListening(false);
+          if (e?.error === 'no-speech') {
+            setFeedbackMsg(isFemale ? 'لم نسمع صوتكِ يا بطلة! افتحي المايك واقرئي الكلمة المحددة.' : 'لم نسمع صوتك يا بطل! افتح المايك واقرأ الكلمة المحددة.');
+            speakArabicText(isFemale ? 'لم أسمعكِ يا بطلة، حاولي مرة أخرى.' : 'لم أسمعك يا بطل، حاول مرة أخرى.');
+          } else if (e?.error === 'not-allowed') {
+            setFeedbackMsg('⚠️ إذن المايكروفون محظور. يرجى السماح بالمايك من شريط عنوان المتصفح.');
+          } else {
+            setFeedbackMsg('⚠️ لم نتمكن من التقاط الصوت من المايك. تأكد من توصيله.');
+          }
         };
 
         recognition.onend = () => {

@@ -4,6 +4,8 @@ export interface SpeechAnalysisResult {
   spokenText: string;
   targetText: string;
   isMatch: boolean;
+  isUnclear: boolean;
+  isWrong: boolean;
   similarityScore: number; // 0 to 100
   feedbackMessageAr: string;
   phoneticNotes?: string;
@@ -37,8 +39,8 @@ export function calculateArabicSimilarity(str1: string, str2: string): number {
   const s1 = normalizeArabicText(str1);
   const s2 = normalizeArabicText(str2);
 
+  if (!s1 || !s2) return 0;
   if (s1 === s2) return 100;
-  if (s1.length === 0 || s2.length === 0) return 0;
   if (s1.includes(s2) || s2.includes(s1)) return 85;
 
   const track = Array(s2.length + 1)
@@ -66,28 +68,47 @@ export function calculateArabicSimilarity(str1: string, str2: string): number {
 }
 
 /**
- * Analyzes child speech attempt and provides child-friendly, non-punitive feedback
+ * Analyzes child speech attempt with strict clinical criteria:
+ * - isMatch (score >= 70%): pronounced correctly.
+ * - isUnclear (40% <= score < 70%): muttered, low volume, or partial.
+ * - isWrong (score < 40%): incorrect pronunciation or wrong word.
  */
 export function analyzeChildSpeech(spoken: string, expectedTarget: string): SpeechAnalysisResult {
   const normSpoken = normalizeArabicText(spoken);
   const normTarget = normalizeArabicText(expectedTarget);
 
+  if (!normSpoken || normSpoken.length === 0) {
+    return {
+      spokenText: '',
+      targetText: expectedTarget,
+      isMatch: false,
+      isUnclear: true,
+      isWrong: false,
+      similarityScore: 0,
+      feedbackMessageAr: 'لم نسمع صوتك يا بطل! افتح المايك وانطق بصوت واضح.',
+    };
+  }
+
   const score = calculateArabicSimilarity(normSpoken, normTarget);
   const isMatch = score >= 70;
+  const isUnclear = score >= 40 && score < 70;
+  const isWrong = score < 40;
 
   let feedbackMessageAr = '';
-  if (score >= 90) {
-    feedbackMessageAr = 'نطق ممتاز ومثالي يا بطل! صوتك رائع وواضح جداً!';
-  } else if (score >= 70) {
-    feedbackMessageAr = 'أحسنت جداً! نطقك قريب وجميل، هيا نجربها مرة أخرى معاً!';
+  if (isMatch) {
+    feedbackMessageAr = `نطق سليم وممتاز يا بطل (${score}%)! صوتك رائع.`;
+  } else if (isUnclear) {
+    feedbackMessageAr = `الصوت مش واضح قوي يا بطل (${score}%).. عيد تاني بهدوء وركز في مخرج الحرف.`;
   } else {
-    feedbackMessageAr = 'محاولة بطل شجاع! استمع لي جيداً وكرر الكلمة معي بهدوء.';
+    feedbackMessageAr = `نطق غير صحيح.. الحرف المستهدف هو «${expectedTarget}»، اسمعني كويس وجرب تاني!`;
   }
 
   return {
     spokenText: spoken,
     targetText: expectedTarget,
     isMatch,
+    isUnclear,
+    isWrong,
     similarityScore: score,
     feedbackMessageAr,
   };
@@ -110,30 +131,62 @@ export function speakArabicText(
     return { cancel: () => {} };
   }
 
-  // Cancel any ongoing speech immediately for responsive barge-in
-  window.speechSynthesis.cancel();
+  try {
+    // Unpause if Chrome paused speech synthesis
+    if (window.speechSynthesis.paused) {
+      window.speechSynthesis.resume();
+    }
+    // Cancel any previous speech
+    window.speechSynthesis.cancel();
+  } catch {
+    // Ignore
+  }
 
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = 'ar-SA';
-  utterance.rate = options?.rate ?? 0.85; // Slightly slower for child clarity
-  utterance.pitch = options?.pitch ?? 1.15; // Slightly warmer/friendly pitch for children
+  utterance.rate = options?.rate ?? 0.88; // Slower for clear child comprehension
+  utterance.pitch = options?.pitch ?? 1.2; // Warmer friendly pitch for children
 
-  // Pick Arabic voice if available in system
-  const voices = window.speechSynthesis.getVoices();
-  const arVoice = voices.find(v => v.lang.startsWith('ar') || v.lang.includes('ar-'));
-  if (arVoice) {
-    utterance.voice = arVoice;
-  }
+  // Load voices and select Arabic voice if available
+  const setVoice = () => {
+    try {
+      const voices = window.speechSynthesis.getVoices();
+      if (voices && voices.length > 0) {
+        // Look for Arabic female or child-friendly voice
+        const arVoice = voices.find(
+          v => (v.lang.startsWith('ar') || v.lang.includes('ar-')) &&
+               (v.name.toLowerCase().includes('female') || v.name.toLowerCase().includes('hoda') || v.name.toLowerCase().includes('salma') || v.name.toLowerCase().includes('naayf') || v.name.toLowerCase().includes('arabic'))
+        ) || voices.find(v => v.lang.startsWith('ar') || v.lang.includes('ar-'));
+
+        if (arVoice) {
+          utterance.voice = arVoice;
+        }
+      }
+    } catch {
+      // Fallback
+    }
+  };
+
+  setVoice();
 
   if (options?.onStart) utterance.onstart = options.onStart;
   if (options?.onEnd) utterance.onend = options.onEnd;
   utterance.onerror = () => options?.onEnd?.();
 
-  window.speechSynthesis.speak(utterance);
+  try {
+    window.speechSynthesis.speak(utterance);
+  } catch (err) {
+    console.warn('Speech synthesis speak error:', err);
+    options?.onEnd?.();
+  }
 
   return {
     cancel: () => {
-      window.speechSynthesis.cancel();
+      try {
+        window.speechSynthesis.cancel();
+      } catch {
+        // Ignore
+      }
     },
   };
 }
