@@ -36,11 +36,11 @@ export default function BrandLogo({ size = 'md', showSlogan = true }: BrandLogoP
 
       <div className="flex flex-col justify-center">
         {/* Arabic Platform Title with sufficient padding to prevent letter "ق" tail clipping */}
-        <span className={`font-black ${titleSizes} tracking-normal bg-gradient-to-l from-indigo-900 via-purple-700 to-pink-600 bg-clip-text text-transparent leading-[1.3] pb-1 px-1 overflow-visible inline-block select-none`}>
+        <span className={`font-black ${titleSizes} tracking-normal bg-gradient-to-l from-indigo-900 via-purple-700 to-pink-600 bg-clip-text text-transparent leading-[1.3] pb-0.5 px-0.5 overflow-visible inline-block select-none`}>
           نُـطْـق
         </span>
         {showSlogan && (
-          <span className="text-[10px] sm:text-xs text-indigo-600 font-bold -mt-0.5 hidden sm:inline tracking-normal select-none">
+          <span className="text-[10px] sm:text-xs text-indigo-600 font-bold mt-1 hidden sm:inline tracking-normal select-none">
             منصة الذكاء الاصطناعي لتأهيل الأطفال
           </span>
         )}
