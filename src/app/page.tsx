@@ -123,21 +123,21 @@ export default function LandingPage() {
               </div>
             </div>
 
-            {/* MOBILE HERO BANNER (True Mobile 5:6 Proportions - Zero Cropped Characters - Text Centered) */}
+            {/* MOBILE HERO BANNER (True Mobile 5:6 Proportions - Text at Top - Characters Uncovered Below) */}
             <div className="block sm:hidden relative w-full aspect-[5/6] rounded-3xl overflow-hidden shadow-2xl border border-indigo-900/40 bg-slate-950">
               
-              {/* Full Mobile Illustration - True Proportions, Zero Cut Characters */}
+              {/* Full Mobile Illustration */}
               <img
                 src="/images/banners/hero-mobile.jpg"
                 alt="منصة نطق لتأهيل الأطفال"
                 className="absolute inset-0 w-full h-full object-cover object-bottom"
               />
               
-              {/* Balanced Full-Card Vignette for Crisp Centered Text */}
-              <div className="absolute inset-0 bg-gradient-to-b from-slate-950/75 via-slate-950/55 to-slate-950/30" />
+              {/* Soft Top Gradient so Text at Top is Crisp & Characters Below Stay 100% Clear */}
+              <div className="absolute inset-0 bg-gradient-to-b from-slate-950/90 via-slate-950/45 to-transparent h-3/5" />
               
-              {/* Centered Content Inside Banner */}
-              <div className="relative z-10 p-5 h-full flex flex-col justify-center items-center text-center text-white space-y-3">
+              {/* Top Text Content */}
+              <div className="relative z-10 p-5 pt-5 h-full flex flex-col justify-start items-center text-center text-white space-y-2.5">
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-900/80 backdrop-blur-md border border-white/20 text-yellow-300 text-[10px] font-black shadow-md">
                   <Sparkles className="w-3 h-3 text-yellow-300" />
                   <span>منصة التخاطب الذكية الأولى للأطفال</span>
@@ -156,7 +156,7 @@ export default function LandingPage() {
                   />
                 </div>
 
-                <p className="text-xs text-slate-100 leading-relaxed font-medium max-w-xs drop-shadow-sm">
+                <p className="text-xs text-slate-100 leading-relaxed font-medium max-w-xs drop-shadow-sm line-clamp-2">
                   جلسات تخاطب تفاعلية ومحادثة صوتية فورية تفهم طفلك وتشجعه كأخصائي حقيقي.
                 </p>
 
@@ -246,26 +246,23 @@ export default function LandingPage() {
                 </div>
               </div>
 
-              {/* MOBILE LAYOUT (1:1 True Mobile Aspect - Zero Cut Heads - Text Centered) */}
+              {/* MOBILE LAYOUT (1:1 True Mobile Aspect - Text at Top - Boy & Therapist Uncovered Below) */}
               <div className="block sm:hidden relative w-full aspect-square rounded-3xl overflow-hidden shadow-xl border border-indigo-900/40 bg-slate-950">
                 <img
                   src="/images/banners/specialist-call-mobile.jpg"
                   alt="مكالمة أخصائية التخاطب"
                   className="absolute inset-0 w-full h-full object-cover object-center"
                 />
-                <div className="absolute inset-0 bg-slate-950/60" />
+                <div className="absolute inset-0 bg-gradient-to-b from-slate-950/90 via-slate-950/45 to-transparent h-3/5" />
 
-                <div className="relative z-10 p-5 h-full flex flex-col justify-center items-center text-center space-y-3 text-white">
-                  <span className="bg-purple-900/85 backdrop-blur-md text-yellow-300 text-[10px] font-black px-3 py-1 rounded-full border border-purple-400/40">
+                <div className="relative z-10 p-5 pt-5 h-full flex flex-col justify-start items-center text-center space-y-2 text-white">
+                  <span className="bg-purple-900/85 backdrop-blur-md text-yellow-300 text-[10px] font-black px-3 py-0.5 rounded-full border border-purple-400/40">
                     مكالمة صوتية حية د. سارة
                   </span>
 
-                  <h3 className="text-lg font-black leading-snug drop-shadow-md max-w-xs">
+                  <h3 className="text-base font-black leading-snug drop-shadow-md max-w-xs">
                     تحدث صوتياً مع الأخصائية كأنك في عيادة حقيقية
                   </h3>
-                  <p className="text-xs text-purple-100 leading-relaxed font-medium max-w-xs drop-shadow-sm">
-                    محادثة صوتية ذكية تفهم نطق طفلك وتشجعه، وتنشئ كروت صور شارحة فورياً.
-                  </p>
                   <Link
                     href="/sessions/sess-sl-101"
                     className="w-full max-w-xs py-2.5 bg-gradient-to-r from-yellow-400 to-amber-500 text-purple-950 font-black text-xs rounded-xl shadow-lg text-center flex items-center justify-center gap-2 active:scale-95 transition-transform"
@@ -326,21 +323,21 @@ export default function LandingPage() {
                 </div>
               </div>
 
-              {/* MOBILE LAYOUT (14:15 True Mobile Aspect - Full Scene - Text Centered) */}
-              <div className="block sm:hidden relative w-full aspect-[14/15] rounded-3xl overflow-hidden shadow-xl border border-teal-900/40 bg-slate-950">
+              {/* MOBILE LAYOUT (1:1 Full Seamless Scene - Text at Top - Boy, Book & Owl 100% Uncovered Below) */}
+              <div className="block sm:hidden relative w-full aspect-square rounded-3xl overflow-hidden shadow-xl border border-teal-900/40 bg-slate-950">
                 <img
                   src="/images/banners/reading-trainer-mobile.jpg"
                   alt="مدرب القراءة الذكي"
-                  className="absolute inset-0 w-full h-full object-cover object-bottom"
+                  className="absolute inset-0 w-full h-full object-cover object-center"
                 />
-                <div className="absolute inset-0 bg-slate-950/60" />
+                <div className="absolute inset-0 bg-gradient-to-b from-slate-950/90 via-slate-950/45 to-transparent h-3/5" />
 
-                <div className="p-5 h-full flex flex-col justify-center items-center text-center space-y-3 text-white relative z-10">
-                  <span className="bg-teal-900/85 backdrop-blur-md text-emerald-300 text-[10px] font-black px-3 py-1 rounded-full border border-teal-400/40">
+                <div className="p-5 pt-5 h-full flex flex-col justify-start items-center text-center space-y-2 text-white relative z-10">
+                  <span className="bg-teal-900/85 backdrop-blur-md text-emerald-300 text-[10px] font-black px-3 py-0.5 rounded-full border border-teal-400/40">
                     كلمات مضيئة تفاعلية
                   </span>
 
-                  <h3 className="text-lg font-black leading-snug drop-shadow-md max-w-xs">
+                  <h3 className="text-base font-black leading-snug drop-shadow-md max-w-xs">
                     الطفل يقرأ بصوته، والكلمة تضيء بالأخضر والخطأ بالأحمر!
                   </h3>
                   <div className="flex items-center justify-center gap-2 text-[11px] font-bold">
