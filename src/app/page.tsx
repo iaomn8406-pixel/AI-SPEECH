@@ -123,57 +123,52 @@ export default function LandingPage() {
               </div>
             </div>
 
-            {/* MOBILE HERO BANNER (True Mobile 5:6 Proportions - Text at Top - Characters Uncovered Below) */}
-            <div className="block sm:hidden relative w-full aspect-[5/6] rounded-3xl overflow-hidden shadow-2xl border border-indigo-900/40 bg-slate-950">
+            {/* MOBILE HERO BANNER (Cinematic Side-Aligned Layout Like Desktop - Text on Right, Characters on Left) */}
+            <div className="block sm:hidden relative w-full min-h-[245px] aspect-[16/10] rounded-3xl overflow-hidden shadow-2xl border border-indigo-900/40 bg-slate-950">
               
-              {/* Full Mobile Illustration */}
-              <img
-                src="/images/banners/hero-mobile.jpg"
-                alt="منصة نطق لتأهيل الأطفال"
-                className="absolute inset-0 w-full h-full object-cover object-bottom"
+              {/* Full Wide Scene Anchored Left so Girl, Boy & Robot Are 100% Visible on Left */}
+              <div 
+                className="absolute inset-0 bg-cover bg-left"
+                style={{ backgroundImage: "url('/images/banners/hero-desktop.jpg')" }}
               />
               
-              {/* Soft Top Gradient so Text at Top is Crisp & Characters Below Stay 100% Clear */}
-              <div className="absolute inset-0 bg-gradient-to-b from-slate-950/90 via-slate-950/45 to-transparent h-3/5" />
+              {/* Smooth Cinematic Right-to-Left Gradient Matching Desktop */}
+              <div className="absolute inset-0 bg-gradient-to-l from-slate-950/95 via-slate-950/75 to-transparent" />
               
-              {/* Top Text Content */}
-              <div className="relative z-10 p-5 pt-5 h-full flex flex-col justify-start items-center text-center text-white space-y-2.5">
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-900/80 backdrop-blur-md border border-white/20 text-yellow-300 text-[10px] font-black shadow-md">
-                  <Sparkles className="w-3 h-3 text-yellow-300" />
-                  <span>منصة التخاطب الذكية الأولى للأطفال</span>
+              {/* Side-Aligned Content on Right (Identical Cinematic Composition to Desktop) */}
+              <div className="relative z-10 p-4 pr-5 h-full w-[62%] mr-0 flex flex-col justify-center items-start text-right text-white space-y-2">
+                <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-yellow-300 text-[9px] font-black shadow-sm">
+                  <Sparkles className="w-2.5 h-2.5 text-yellow-300" />
+                  <span>منصة التخاطب الذكية</span>
                 </div>
 
-                <div className="flex items-center justify-center gap-2">
-                  <h1 className="text-xl font-black text-white leading-snug drop-shadow-md">
+                <div className="flex items-center gap-1.5">
+                  <h1 className="text-base font-black text-white leading-snug drop-shadow-md">
                     نُساعد طفلك أن يتكلم بثقة، <br />
                     <span className="bg-gradient-to-l from-yellow-300 via-pink-400 to-purple-300 bg-clip-text text-transparent">
-                      ويكتشف صوته الجميل ✨
+                      ويكتشف صوته الجميل! ✨
                     </span>
                   </h1>
-                  <SpeechAudioButton 
-                    text="نساعد طفلك أن يتكلم بثقة، ويكتشف صوته الجميل!" 
-                    size="sm" 
-                  />
                 </div>
 
-                <p className="text-xs text-slate-100 leading-relaxed font-medium max-w-xs drop-shadow-sm line-clamp-2">
+                <p className="text-[10px] text-slate-200 leading-relaxed font-medium line-clamp-2 drop-shadow-xs">
                   جلسات تخاطب تفاعلية ومحادثة صوتية فورية تفهم طفلك وتشجعه كأخصائي حقيقي.
                 </p>
 
-                {/* Mobile Action Buttons */}
-                <div className="flex items-center gap-2 w-full max-w-xs pt-1">
+                {/* Compact Side-by-Side Buttons */}
+                <div className="flex items-center gap-1.5 pt-0.5">
                   <Link
                     href="/register"
-                    className="flex-1 py-2.5 bg-gradient-to-r from-pink-500 via-purple-600 to-indigo-600 text-white font-black text-xs rounded-xl shadow-lg text-center flex items-center justify-center gap-1.5 active:scale-95 transition-transform"
+                    className="px-3 py-1.5 bg-gradient-to-r from-pink-500 via-purple-600 to-indigo-600 text-white font-black text-[10px] rounded-lg shadow-md flex items-center gap-1 active:scale-95 transition-transform"
                   >
                     <span>ابدأ الآن</span>
-                    <ArrowLeft className="w-3.5 h-3.5" />
+                    <ArrowLeft className="w-3 h-3" />
                   </Link>
                   <Link
                     href="/parent/consultation"
-                    className="px-4 py-2.5 bg-slate-900/75 hover:bg-slate-900/90 text-white border border-white/30 font-bold text-xs rounded-xl text-center flex items-center justify-center gap-1.5 backdrop-blur-md"
+                    className="px-2.5 py-1.5 bg-white/15 text-white border border-white/25 font-bold text-[10px] rounded-lg flex items-center gap-1 backdrop-blur-md"
                   >
-                    <Bot className="w-3.5 h-3.5 text-yellow-300" />
+                    <Bot className="w-3 h-3 text-yellow-300" />
                     <span>استشر AI</span>
                   </Link>
                 </div>
@@ -200,14 +195,104 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* 2. FEATURE BANNERS (100% Full-Bleed on Desktop - True Mobile Proportions & Centered Text) */}
+        {/* CONTENT SECTION 1 (Between Hero & Call Banner): Smart Speech Mastery & AI Assessment */}
         <section className="px-3 sm:px-6 lg:px-8">
-          <div className="max-w-7xl mx-auto space-y-8">
-            
-            {/* BANNER 1: Live Voice Call with AI Specialist (New Full-Bleed Room + Holographic Flashcards) */}
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center max-w-2xl mx-auto mb-8">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 text-xs font-black border border-indigo-100">
+                <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
+                <span>لماذا يثق الأهل والأطباء في منصة نُطق؟</span>
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-black text-gray-900 mt-3">
+                تقييم سريري ذكي وتدريب صوتي حقيقي بالمايك
+              </h2>
+              <p className="text-xs sm:text-sm text-gray-600 mt-2">
+                لا نكتفي بالصور فقط؛ ندمج بين تحليل النطق الفعلي للطفل وبناء خطة علاجية متدرجة تناسب قدراته.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
+              {/* Illustrated Content Card 1: Real Mic Mastery (2/2) */}
+              <div className="bg-white rounded-3xl border border-gray-200/80 shadow-sm hover:shadow-xl transition-all overflow-hidden flex flex-col">
+                <div className="relative w-full aspect-video overflow-hidden bg-slate-100">
+                  <img
+                    src="/images/content/feature-mic-mastery.jpg"
+                    alt="تحليل النطق بالمايك وإتقان الحرف مرتين"
+                    className="w-full h-full object-cover object-center hover:scale-105 transition-transform duration-700"
+                  />
+                  <span className="absolute top-3 right-3 bg-emerald-600/90 backdrop-blur-md text-white text-[11px] font-black px-3 py-1 rounded-full shadow-sm">
+                    تحقق صوتي فعلي (2/2)
+                  </span>
+                </div>
+                <div className="p-5 sm:p-7 flex-1 flex flex-col justify-between space-y-4">
+                  <div className="space-y-2.5">
+                    <h3 className="text-lg sm:text-xl font-black text-gray-900">
+                      مايك حقيقي يختبر نطق الطفل ولا يمرر الخطأ
+                    </h3>
+                    <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
+                      يستمع النظام لصوت الطفل فعلياً عبر الميكروفون؛ ويشترط نطق الحرف أو الكلمة بشكل صحيح <strong>مرتين متتاليتين</strong> للتأكد من إتقان المخرج الصوتي، مع تنبيه واضح عند عدم الوضوح أو الخطأ وإمكانية سماع نموذج المعلمة في أي لحظة.
+                    </p>
+                  </div>
+                  <div className="pt-2 border-t border-gray-100 flex items-center justify-between">
+                    <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full">
+                      دقة صوتية لحظية
+                    </span>
+                    <Link
+                      href="/sessions"
+                      className="text-xs sm:text-sm font-black text-indigo-600 hover:text-indigo-800 inline-flex items-center gap-1.5"
+                    >
+                      <span>استكشف جلسات النطق</span>
+                      <ArrowLeft className="w-4 h-4" />
+                    </Link>
+                  </div>
+                </div>
+              </div>
+
+              {/* Illustrated Content Card 2: Smart AI Assessment & Parent Map */}
+              <div className="bg-white rounded-3xl border border-gray-200/80 shadow-sm hover:shadow-xl transition-all overflow-hidden flex flex-col">
+                <div className="relative w-full aspect-video overflow-hidden bg-slate-100">
+                  <img
+                    src="/images/content/feature-ai-assessment.jpg"
+                    alt="استشارة الذكاء الاصطناعي وخطة الطفل المخصصة"
+                    className="w-full h-full object-cover object-center hover:scale-105 transition-transform duration-700"
+                  />
+                  <span className="absolute top-3 right-3 bg-purple-600/90 backdrop-blur-md text-white text-[11px] font-black px-3 py-1 rounded-full shadow-sm">
+                    خطة ذكية مخصصة
+                  </span>
+                </div>
+                <div className="p-5 sm:p-7 flex-1 flex flex-col justify-between space-y-4">
+                  <div className="space-y-2.5">
+                    <h3 className="text-lg sm:text-xl font-black text-gray-900">
+                      استشارة أولية وخارطة تعلم تناسب عمر ولهجة طفلك
+                    </h3>
+                    <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
+                      من خلال حوار ذكي وسريع مع ولي الأمر، يحدد الذكاء الاصطناعي نقاط القوة والتحديات (تأخر الكلام، اللدغات، التلعثم، أو عسر القراءة)، ويصمم مساراً تدريجياً مبهجاً يدعم اللهجة المصرية والعربية الفصحى.
+                    </p>
+                  </div>
+                  <div className="pt-2 border-t border-gray-100 flex items-center justify-between">
+                    <span className="text-xs font-bold text-purple-700 bg-purple-50 px-3 py-1 rounded-full">
+                      دعم مصري وفصحى
+                    </span>
+                    <Link
+                      href="/parent/consultation"
+                      className="text-xs sm:text-sm font-black text-indigo-600 hover:text-indigo-800 inline-flex items-center gap-1.5"
+                    >
+                      <span>ابدأ الاستشارة الذكية</span>
+                      <ArrowLeft className="w-4 h-4" />
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* BANNER 1: Live Voice Call with AI Specialist (Full-Bleed Desktop & Side-Aligned Cinematic Mobile) */}
+        <section className="px-3 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto">
             <div className="w-full bg-slate-950 rounded-3xl lg:rounded-[2.5rem] overflow-hidden shadow-xl border border-indigo-900/30">
               
-              {/* DESKTOP LAYOUT (100% Full-Bleed - Zero Black Edges - Therapist & Boy on Left, Text on Right) */}
+              {/* DESKTOP LAYOUT (100% Full-Bleed - Therapist & Boy on Left, Text on Right) */}
               <div className="hidden sm:block relative w-full h-[420px] lg:h-[460px]">
                 <div 
                   className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 scale-100 hover:scale-102"
@@ -246,39 +331,139 @@ export default function LandingPage() {
                 </div>
               </div>
 
-              {/* MOBILE LAYOUT (1:1 True Mobile Aspect - Text at Top - Boy & Therapist Uncovered Below) */}
-              <div className="block sm:hidden relative w-full aspect-square rounded-3xl overflow-hidden shadow-xl border border-indigo-900/40 bg-slate-950">
-                <img
-                  src="/images/banners/specialist-call-mobile.jpg"
-                  alt="مكالمة أخصائية التخاطب"
-                  className="absolute inset-0 w-full h-full object-cover object-center"
+              {/* MOBILE LAYOUT (Cinematic Side-Aligned Layout Like Desktop - Text on Right, Characters on Left) */}
+              <div className="block sm:hidden relative w-full min-h-[240px] aspect-[16/10] rounded-3xl overflow-hidden shadow-xl border border-indigo-900/40 bg-slate-950">
+                <div
+                  className="absolute inset-0 bg-cover bg-[position:12%_center]"
+                  style={{ backgroundImage: "url('/images/banners/specialist-call-desktop.jpg')" }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-b from-slate-950/90 via-slate-950/45 to-transparent h-3/5" />
+                <div className="absolute inset-0 bg-gradient-to-l from-slate-950/95 via-slate-950/75 to-transparent" />
 
-                <div className="relative z-10 p-5 pt-5 h-full flex flex-col justify-start items-center text-center space-y-2 text-white">
-                  <span className="bg-purple-900/85 backdrop-blur-md text-yellow-300 text-[10px] font-black px-3 py-0.5 rounded-full border border-purple-400/40">
-                    مكالمة صوتية حية د. سارة
+                <div className="relative z-10 p-4 pr-5 h-full w-[62%] mr-0 flex flex-col justify-center items-start text-right space-y-2 text-white">
+                  <span className="bg-purple-900/85 backdrop-blur-md text-yellow-300 text-[9px] font-black px-2.5 py-0.5 rounded-full border border-purple-400/40">
+                    مكالمة حية د. سارة
                   </span>
 
-                  <h3 className="text-base font-black leading-snug drop-shadow-md max-w-xs">
-                    تحدث صوتياً مع الأخصائية كأنك في عيادة حقيقية
+                  <h3 className="text-sm font-black leading-snug drop-shadow-md">
+                    تحدث صوتياً مع الأخصائية كأنك في عيادة حقيقية!
                   </h3>
+
+                  <p className="text-[10px] text-purple-100 leading-relaxed line-clamp-2 drop-shadow-xs">
+                    محادثة صوتية ذكية تفهم نطق الطفل وتنشئ كروت صور شارحة فوراً.
+                  </p>
+
                   <Link
                     href="/sessions/sess-sl-101"
-                    className="w-full max-w-xs py-2.5 bg-gradient-to-r from-yellow-400 to-amber-500 text-purple-950 font-black text-xs rounded-xl shadow-lg text-center flex items-center justify-center gap-2 active:scale-95 transition-transform"
+                    className="px-3.5 py-2 bg-gradient-to-r from-yellow-400 to-amber-500 text-purple-950 font-black text-[10px] rounded-lg shadow-lg inline-flex items-center gap-1.5 active:scale-95 transition-transform"
                   >
-                    <PhoneCall className="w-4 h-4 text-purple-950" />
-                    <span>بدء المكالمة الحية الآن</span>
+                    <PhoneCall className="w-3.5 h-3.5 text-purple-950" />
+                    <span>بدء المكالمة الحية</span>
                   </Link>
                 </div>
               </div>
 
             </div>
+          </div>
+        </section>
 
-            {/* BANNER 2: Interactive Reading Highlighter (Boy Reading Glowing Book with Owl Mascot) */}
+        {/* CONTENT SECTION 2 (Between Call Banner & Reading Banner): Specialist Portal & Video Library */}
+        <section className="px-3 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center max-w-2xl mx-auto mb-8">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-50 text-teal-700 text-xs font-black border border-teal-100">
+                <Stethoscope className="w-3.5 h-3.5 text-teal-600" />
+                <span>منظومة متكاملة للعيادات والأسر</span>
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-black text-gray-900 mt-3">
+                متابعة الأخصائيين ومكتبة الفيديوهات التدريبية
+              </h2>
+              <p className="text-xs sm:text-sm text-gray-600 mt-2">
+                تواصل مع أخصائي تخاطب معتمد بكود الربط الخاص به، أو درّب طفلك في المنزل عبر تمارين الفيديو المصنفة.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
+              {/* Illustrated Content Card 3: Specialist Portal & Invite Code */}
+              <div className="bg-white rounded-3xl border border-gray-200/80 shadow-sm hover:shadow-xl transition-all overflow-hidden flex flex-col">
+                <div className="relative w-full aspect-video overflow-hidden bg-slate-100">
+                  <img
+                    src="/images/content/portal-specialist-clinic.jpg"
+                    alt="لوحة الأخصائي ومتابعة خط سير الطفل وتقارير التحسن"
+                    className="w-full h-full object-cover object-center hover:scale-105 transition-transform duration-700"
+                  />
+                  <span className="absolute top-3 right-3 bg-indigo-600/90 backdrop-blur-md text-white text-[11px] font-black px-3 py-1 rounded-full shadow-sm">
+                    ربط مباشر بالطبيب
+                  </span>
+                </div>
+                <div className="p-5 sm:p-7 flex-1 flex flex-col justify-between space-y-4">
+                  <div className="space-y-2.5">
+                    <h3 className="text-lg sm:text-xl font-black text-gray-900">
+                      كود دعوة الأخصائي وتقارير التحسن السريرية
+                    </h3>
+                    <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
+                      يمتلك كل أخصائي كود دعوة خاص يربط به طلابه ليتابع رحلة الطفل ونتائج جلساته ومؤشرات تحسن النطق خطوة بخطوة، مع إمكانية إصدار وتحميل تقارير احترافية منظمة لولي الأمر.
+                    </p>
+                  </div>
+                  <div className="pt-2 border-t border-gray-100 flex items-center justify-between">
+                    <span className="text-xs font-bold text-indigo-700 bg-indigo-50 px-3 py-1 rounded-full">
+                      تقارير احترافية جاهزة
+                    </span>
+                    <Link
+                      href="/specialists"
+                      className="text-xs sm:text-sm font-black text-emerald-700 hover:text-emerald-900 inline-flex items-center gap-1.5"
+                    >
+                      <span>تصفح دليل الأخصائيين</span>
+                      <ArrowLeft className="w-4 h-4" />
+                    </Link>
+                  </div>
+                </div>
+              </div>
+
+              {/* Illustrated Content Card 4: Categorized Video Library */}
+              <div className="bg-white rounded-3xl border border-gray-200/80 shadow-sm hover:shadow-xl transition-all overflow-hidden flex flex-col">
+                <div className="relative w-full aspect-video overflow-hidden bg-slate-100">
+                  <img
+                    src="/images/content/portal-video-library.jpg"
+                    alt="مكتبة الفيديوهات التدريبية المصنفة للأطفال"
+                    className="w-full h-full object-cover object-center hover:scale-105 transition-transform duration-700"
+                  />
+                  <span className="absolute top-3 right-3 bg-pink-600/90 backdrop-blur-md text-white text-[11px] font-black px-3 py-1 rounded-full shadow-sm">
+                    مكتبة فيديو مصنفة
+                  </span>
+                </div>
+                <div className="p-5 sm:p-7 flex-1 flex flex-col justify-between space-y-4">
+                  <div className="space-y-2.5">
+                    <h3 className="text-lg sm:text-xl font-black text-gray-900">
+                      مكتبة فيديوهات وتمارين منزلية بإشراف الأخصائيين
+                    </h3>
+                    <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
+                      شاهد تمارين حركة اللسان، علاج لدغات الحروف، وأنشطة التحفيز اللغوي المصورة التي يرفعها الأخصائيون وتُصنف تلقائياً حسب التخصص لتطبيقها بسهولة في المنزل بعد تسجيل الدخول.
+                    </p>
+                  </div>
+                  <div className="pt-2 border-t border-gray-100 flex items-center justify-between">
+                    <span className="text-xs font-bold text-pink-700 bg-pink-50 px-3 py-1 rounded-full">
+                      تصنيفات متخصصة
+                    </span>
+                    <Link
+                      href="/videos"
+                      className="text-xs sm:text-sm font-black text-pink-600 hover:text-pink-800 inline-flex items-center gap-1.5"
+                    >
+                      <span>استكشف مكتبة الفيديوهات</span>
+                      <ArrowLeft className="w-4 h-4" />
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* BANNER 2: Interactive Reading Highlighter (Full-Bleed Desktop & Side-Aligned Cinematic Mobile) */}
+        <section className="px-3 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto">
             <div className="w-full bg-slate-950 rounded-3xl lg:rounded-[2.5rem] overflow-hidden shadow-xl border border-teal-900/30">
               
-              {/* DESKTOP LAYOUT (100% Width - Zero Black Edges) */}
+              {/* DESKTOP LAYOUT (100% Width - Boy & Owl on Left, Text on Right) */}
               <div className="hidden sm:block relative w-full h-[420px] lg:h-[460px]">
                 <div 
                   className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 scale-100 hover:scale-102"
@@ -323,82 +508,37 @@ export default function LandingPage() {
                 </div>
               </div>
 
-              {/* MOBILE LAYOUT (1:1 Full Seamless Scene - Text at Top - Boy, Book & Owl 100% Uncovered Below) */}
-              <div className="block sm:hidden relative w-full aspect-square rounded-3xl overflow-hidden shadow-xl border border-teal-900/40 bg-slate-950">
-                <img
-                  src="/images/banners/reading-trainer-mobile.jpg"
-                  alt="مدرب القراءة الذكي"
-                  className="absolute inset-0 w-full h-full object-cover object-center"
+              {/* MOBILE LAYOUT (Cinematic Side-Aligned Layout Like Desktop - Text on Right, Boy & Owl on Left) */}
+              <div className="block sm:hidden relative w-full min-h-[240px] aspect-[16/10] rounded-3xl overflow-hidden shadow-xl border border-teal-900/40 bg-slate-950">
+                <div
+                  className="absolute inset-0 bg-cover bg-left"
+                  style={{ backgroundImage: "url('/images/banners/reading-trainer-desktop.jpg')" }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-b from-slate-950/90 via-slate-950/45 to-transparent h-3/5" />
+                <div className="absolute inset-0 bg-gradient-to-l from-slate-950/95 via-slate-950/75 to-transparent" />
 
-                <div className="p-5 pt-5 h-full flex flex-col justify-start items-center text-center space-y-2 text-white relative z-10">
-                  <span className="bg-teal-900/85 backdrop-blur-md text-emerald-300 text-[10px] font-black px-3 py-0.5 rounded-full border border-teal-400/40">
+                <div className="relative z-10 p-4 pr-5 h-full w-[62%] mr-0 flex flex-col justify-center items-start text-right space-y-2 text-white">
+                  <span className="bg-teal-900/85 backdrop-blur-md text-emerald-300 text-[9px] font-black px-2.5 py-0.5 rounded-full border border-teal-400/40">
                     كلمات مضيئة تفاعلية
                   </span>
 
-                  <h3 className="text-base font-black leading-snug drop-shadow-md max-w-xs">
+                  <h3 className="text-sm font-black leading-snug drop-shadow-md">
                     الطفل يقرأ بصوته، والكلمة تضيء بالأخضر والخطأ بالأحمر!
                   </h3>
-                  <div className="flex items-center justify-center gap-2 text-[11px] font-bold">
-                    <span className="px-2.5 py-0.5 rounded-md bg-emerald-400 text-slate-950 font-black">ذَهَبَ ✔</span>
-                    <span className="px-2.5 py-0.5 rounded-md bg-rose-500 text-white font-black">عُمَرُ ↻</span>
+                  <div className="flex items-center gap-1.5 text-[10px] font-bold">
+                    <span className="px-2 py-0.5 rounded-md bg-emerald-400 text-slate-950 font-black">ذَهَبَ ✔</span>
+                    <span className="px-2 py-0.5 rounded-md bg-rose-500 text-white font-black">عُمَرُ ↻</span>
                   </div>
                   <Link
                     href="/sessions/sess-dys-301"
-                    className="w-full max-w-xs py-2.5 bg-white text-teal-950 font-black text-xs rounded-xl shadow-lg text-center flex items-center justify-center gap-2 active:scale-95 transition-transform"
+                    className="px-3.5 py-2 bg-white text-teal-950 font-black text-[10px] rounded-lg shadow-lg inline-flex items-center gap-1.5 active:scale-95 transition-transform"
                   >
-                    <Mic className="w-4 h-4 text-emerald-600" />
-                    <span>بدء تجربة القراءة الآن</span>
+                    <Mic className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>بدء تجربة القراءة</span>
                   </Link>
                 </div>
               </div>
 
             </div>
-
-            {/* Quick Gateways to Videos & Specialists Directory */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 pt-2">
-              <Link
-                href="/videos"
-                className="bg-white p-5 sm:p-6 rounded-3xl border border-gray-200 shadow-xs hover:shadow-xl hover:border-pink-300 transition-all flex items-center justify-between group"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-pink-100 text-pink-600 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
-                    🎬
-                  </div>
-                  <div>
-                    <h4 className="font-black text-sm sm:text-base text-gray-900 group-hover:text-pink-600 transition-colors">
-                      مكتبة الفيديوهات والتمارين المصورة
-                    </h4>
-                    <p className="text-xs text-gray-500 mt-0.5">
-                      تمارين حركة اللسان، علاج لدغات الحروف، والتحفيز اللغوي للمنزل.
-                    </p>
-                  </div>
-                </div>
-                <ArrowLeft className="w-5 h-5 text-gray-400 group-hover:-translate-x-1 group-hover:text-pink-600 transition-all shrink-0" />
-              </Link>
-
-              <Link
-                href="/specialists"
-                className="bg-white p-5 sm:p-6 rounded-3xl border border-gray-200 shadow-xs hover:shadow-xl hover:border-emerald-300 transition-all flex items-center justify-between group"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
-                    ⚕️
-                  </div>
-                  <div>
-                    <h4 className="font-black text-sm sm:text-base text-gray-900 group-hover:text-emerald-600 transition-colors">
-                      دليل الأخصائيين والنصائح السريرية
-                    </h4>
-                    <p className="text-xs text-gray-500 mt-0.5">
-                      تابع استشاريي التخاطب المعتمدين، احصل على كود الربط، وتابع إرشاداتهم.
-                    </p>
-                  </div>
-                </div>
-                <ArrowLeft className="w-5 h-5 text-gray-400 group-hover:-translate-x-1 group-hover:text-emerald-600 transition-all shrink-0" />
-              </Link>
-            </div>
-
           </div>
         </section>
 
